@@ -1,4 +1,3 @@
-import json, requests
 from client import KrogerClient, KrogerServiceClient
 
 # Token = base64(client_id:client_secret)
