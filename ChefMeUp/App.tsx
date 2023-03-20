@@ -1,118 +1,104 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
+import {Text, Image} from 'react-native';
+import RecipesView from './views/RecipesView';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Tab = createMaterialBottomTabNavigator();
+const Stack = createStackNavigator();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const FirstStack = () => (
+  <Stack.Navigator>
+    {RecipesView()}
+  </Stack.Navigator>
+);
+
+const SecondStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="SecondScreen" component={SecondScreen} />
+  </Stack.Navigator>
+);
+
+const ThirdStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="ThirdScreen" component={ThirdScreen} />
+  </Stack.Navigator>
+);
+
+// Dummy screen components
+// const FirstScreen = () => (
+//   <Text style={{textAlign: 'center'}}>First Screen</Text>
+// );
+const SecondScreen = () => (
+  <Text style={{textAlign: 'center'}}>Second Screen</Text>
+);
+const ThirdScreen = () => (
+  <Text style={{textAlign: 'center'}}>Third Screen</Text>
+);
+
+const App = () => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="First"
+        shifting={false}
+        sceneAnimationEnabled={false}
+        activeColor="black"
+        inactiveColor="#888"
+        barStyle={{
+          backgroundColor: 'white',
+        }}
+        theme={{colors:{secondaryContainer: 'transparent'}}}
+        screenOptions={{
+          tabBarColor: 'black',
+          //   activeTintColor: 'white',
+          //   inactiveTintColor: '#92c5c2',
+          //   backgroundColor: '#075e54',
+        }}>
+        <Tab.Screen
+          name="First"
+          component={FirstStack}
+          options={{
+            tabBarLabel: 'Recipes',
+            tabBarIcon: ({color, focused}) => (
+              <Image
+                source={require('./assets/bxs-home.png')}
+                style={{tintColor: color, width: 24, height: 24}}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Second"
+          component={SecondStack}
+          options={{
+            tabBarLabel: 'Groceries',
+            tabBarIcon: ({color, focused}) => (
+              <Image
+                source={require('./assets/bxs-food-menu.png')}
+                style={{tintColor: color, width: 24, height: 24}}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Third"
+          component={ThirdStack}
+          options={{
+            tabBarLabel: 'Settings',
+            tabBarIcon: ({color, focused}) => (
+              <Image
+                source={require('./assets/bxs-cog.png')}
+                style={{tintColor: color, width: 24, height: 24}}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
-}
-
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
