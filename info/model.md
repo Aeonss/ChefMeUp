@@ -31,6 +31,11 @@ description: String
 ### PricedIngredient
 ```
 ingredient: Ingredient
+prices: PuchaseOption[]
+```
+
+### PurchaseOption
+```
 store: GroceryStore
 cost: Double
 ```
