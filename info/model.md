@@ -27,3 +27,15 @@ unit: String
 step: Int
 description: String
 ```
+
+### PricedIngredient
+```
+ingredient: Ingredient
+store: GroceryStore
+cost: Double
+```
+
+### GroceryStore
+```
+Enumeration: SAFEWAY, KROGER, WALMART
+```
