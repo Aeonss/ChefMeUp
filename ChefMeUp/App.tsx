@@ -3,34 +3,19 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Text, Image} from 'react-native';
-import RecipesView from './views/RecipesView';
+import RecipeStack from './views/RecipesStack';
 
 const Tab = createMaterialBottomTabNavigator();
-const Stack = createStackNavigator();
-
-
-const FirstStack = () => (
-  <Stack.Navigator>
-    {RecipesView()}
-  </Stack.Navigator>
-);
 
 const SecondStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="SecondScreen" component={SecondScreen} />
-  </Stack.Navigator>
+    <Text>Hello</Text>
 );
 
 const ThirdStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="ThirdScreen" component={ThirdScreen} />
-  </Stack.Navigator>
+    <Text>Hello</Text>
 );
 
-// Dummy screen components
-// const FirstScreen = () => (
-//   <Text style={{textAlign: 'center'}}>First Screen</Text>
-// );
+
 const SecondScreen = () => (
   <Text style={{textAlign: 'center'}}>Second Screen</Text>
 );
@@ -53,13 +38,10 @@ const App = () => {
         theme={{colors:{secondaryContainer: 'transparent'}}}
         screenOptions={{
           tabBarColor: 'black',
-          //   activeTintColor: 'white',
-          //   inactiveTintColor: '#92c5c2',
-          //   backgroundColor: '#075e54',
         }}>
         <Tab.Screen
           name="First"
-          component={FirstStack}
+          component={RecipeStack}
           options={{
             tabBarLabel: 'Recipes',
             tabBarIcon: ({color, focused}) => (

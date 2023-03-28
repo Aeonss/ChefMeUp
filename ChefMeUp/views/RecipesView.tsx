@@ -1,59 +1,77 @@
 import React from 'react';
-import {View, Text, ImageBackground, StyleSheet, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  ImageBackground,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import {Recipe} from '../model/Recipe';
 import sampleRecipes from '../model/sampleRecipes';
-import {createStackNavigator} from '@react-navigation/stack';
-import { SearchBar } from 'react-native-elements';
-import { useState } from 'react';
-import { TextInput } from 'react-native-paper';
+import {useState} from 'react';
+import {TextInput} from 'react-native-paper';
+import {RecipesViewProps} from './RecipeStackParams';
 
-const Stack = createStackNavigator();
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
 
-const RecipeCard = (recipe: Recipe) => (
-  <View style={styles.recipeCard}>
-    <ImageBackground source={{uri: recipe.imageUrl}} style={styles.recipeImage}>
-      <View style={styles.recipeInfo}>
-        <Text style={styles.recipeName}>{recipe.name}</Text>
-        <Text style={styles.recipeDetails}>
-          {recipe.totalMinutes} min • $
-          {recipe.totalCost / recipe.numberServings}/serving
-        </Text>
-      </View>
-    </ImageBackground>
-  </View>
+  // These options are needed to round to whole numbers if that's what you want.
+  //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+  //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+});
+
+const RecipeCard = (recipe: Recipe, onClick: () => void) => (
+  <TouchableOpacity onPress={onClick}>
+    <View style={styles.recipeCard}>
+      <ImageBackground
+        source={{uri: recipe.imageUrl}}
+        style={styles.recipeImage}>
+        <View style={styles.recipeInfo}>
+          <Text style={styles.recipeName}>{recipe.name}</Text>
+          <Text style={styles.recipeDetails}>
+            {recipe.totalMinutes} min • $
+            {formatter.format(recipe.totalCost / recipe.numberServings)}/serving
+          </Text>
+        </View>
+      </ImageBackground>
+    </View>
+  </TouchableOpacity>
 );
 
-const RecipesView = () => {
-    const [search, setSearch] = useState('');
-    const updateSearch = (text: string): void => {
-        setSearch(text);
-    }
+const RecipesView = ({route, navigation}: RecipesViewProps) => {
+  const [search, setSearch] = useState('');
+  const updateSearch = (text: string): void => {
+    setSearch(text);
+  };
+  function getOnClick(recipe: Recipe) {
+    return () => {
+      navigation.navigate('RecipeDetailView', {recipe: recipe});
+    };
+  }
   return (
-    <View>
-      {/* <SearchBar placeholder='Search for a recipe...' onChangeText={updateSearch} value={search} lightTheme round /> */}
-      <TextInput underlineColor='transparent' onChangeText={updateSearch} value={search} placeholder="Search for a recipe..." style={styles.searchBar}></TextInput>
+    <View style={styles.view}>
+      <TextInput
+        underlineColor="transparent"
+        activeUnderlineColor="transparent"
+        onChangeText={updateSearch}
+        value={search}
+        placeholder="Search for a recipe..."
+        style={styles.searchBar}></TextInput>
       <FlatList
         data={sampleRecipes}
-        renderItem={({item}) => RecipeCard(item)}
+        renderItem={({item}) => RecipeCard(item, getOnClick(item))}
         keyExtractor={item => item.id.toString()}
       />
     </View>
   );
 };
 
-const RecipesViewWrapper = () => {
-  return (
-    <Stack.Screen
-      name="Saved Recipes"
-      component={RecipesView}
-      options={{title: 'Saved Recipes'}}
-    />
-  );
-};
-
 const styles = StyleSheet.create({
   recipeCard: {
     margin: 16,
+    marginTop: 0,
     borderRadius: 10,
     overflow: 'hidden',
   },
@@ -85,8 +103,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    marginBottom: 0
+    marginBottom: 16,
+  },
+  view: {
+    height: '100%'
   }
 });
 
-export default RecipesViewWrapper;
+export default RecipesView;

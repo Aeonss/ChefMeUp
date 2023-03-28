@@ -7,24 +7,41 @@ import {
   ScrollView,
   StyleSheet,
   SafeAreaView,
+  Button,
+  TouchableOpacity,
 } from 'react-native';
 
-import { Recipe } from '../model/Recipe';
+import {Recipe} from '../model/Recipe';
+import {RecipesDetailViewProps} from './RecipeStackParams';
 
 type RecipeDetailViewProps = {
   recipe: Recipe;
 };
 
-const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({recipe}) => {
+const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
+  const {recipe} = route.params;
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{recipe.name}</Text>
-      <Image source={{uri: recipe.imageUrl}} style={styles.image} />
-      <Text style={styles.info}>
-        Total Time: {recipe.totalMinutes} | Total Cost: {recipe.totalCost} |{' '}
-        Servings: {recipe.numberServings}
-      </Text>
       <ScrollView style={styles.scrollView}>
+        <Image source={{uri: recipe.imageUrl}} style={styles.image} />
+        <View style={styles.infoContainer}>
+          <Text style={styles.info}>Total Time:</Text>
+          <Text style={styles.info}>{recipe.totalMinutes} minutes</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.info}>Estimated Cost:</Text>
+          <Text style={styles.info}>${recipe.totalCost}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.info}>Quantity:</Text>
+          <Text style={styles.info}>{recipe.numberServings} servings</Text>
+        </View>
+        <TouchableOpacity>
+          <Text style={styles.button}>
+            Check prices at your local grocery store
+          </Text>
+        </TouchableOpacity>
         <Text style={styles.sectionTitle}>Ingredients</Text>
         {recipe.ingredients.map((ingredient, index) => (
           <Text key={index} style={styles.listItem}>
@@ -34,7 +51,7 @@ const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({recipe}) => {
         <Text style={styles.sectionTitle}>Instructions</Text>
         {recipe.instructions.map(instruction => (
           <Text key={instruction.step} style={styles.listItem}>
-            Step {instruction.step}: {instruction.description}
+            {instruction.step}. {instruction.description}
           </Text>
         ))}
       </ScrollView>
@@ -54,15 +71,35 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   image: {
-    width: '100%',
     height: 200,
     resizeMode: 'cover',
+    marginBottom: 10,
+    borderRadius: 15,
   },
   info: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
     textAlign: 'center',
     marginTop: 10,
+  },
+  button: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: 'white',
+    backgroundColor: '#5dbb63',
+    marginTop: 15,
+    padding: 12,
+    borderRadius: 22,
+    overflow: 'hidden',
+    textAlign: 'center',
+  },
+  infoContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    paddingBottom: 4,
   },
   scrollView: {
     margin: 10,
