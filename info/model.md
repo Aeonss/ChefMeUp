@@ -37,7 +37,8 @@ prices: PuchaseOption[]
 ### PurchaseOption
 ```
 store: GroceryStore
-cost: Double
+cost: Double  (cost to buy that product at the store)
+itemizedCost: Double (cost per amount of that product)
 ```
 
 ### GroceryStore
