@@ -43,5 +43,8 @@ itemizedCost: Double (cost per amount of that product)
 
 ### GroceryStore
 ```
-Enumeration: SAFEWAY, KROGER, WALMART
+name: String
+logoUrl: String
+distance: Double (miles)
+address: String
 ```
