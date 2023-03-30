@@ -11,6 +11,11 @@ imageUrl: String
 totalMinutes: Int
 totalCost: Double
 numberServings: Int
+mealType: String
+cusineType: String
+dietLabels: String[]
+healthLabels: String[]
+calories: Int
 ingredients: Ingredient[]
 instructions: Instruction[]
 ```
