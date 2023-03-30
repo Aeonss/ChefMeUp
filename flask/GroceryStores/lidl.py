@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from fp.fp import FreeProxy
 import requests, json
 
 class Lidl:

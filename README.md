@@ -17,7 +17,7 @@ Flask Server: https://hmhing.pythonanywhere.com/
 **Endpoint**
 * /recipes?q=QUERY
 * /grocery?zipcode=ZIPCODE
-* /grocery/item?storeid=STOREID&q=QUERY
+* /item?storeid=STOREID&q=QUERY
 
 
 **APIs**
