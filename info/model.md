@@ -12,19 +12,23 @@ totalMinutes: Int
 totalCost: Double
 numberServings: Int
 mealType: String
-cusineType: String
+dishType: String
+cuisineType: String
 dietLabels: String[]
 healthLabels: String[]
-calories: Int
+calories: Double
 ingredients: Ingredient[]
-instructions: Instruction[]
+instructions: String
 ```
 
 ### Ingredient
 ```
+fullName: String
 name: String
 amount: Double
 unit: String
+category: String
+imageUrl: String
 ```
 
 ### Instruction

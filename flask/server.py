@@ -33,10 +33,27 @@ def search_recipe():
         data['name'] = recipe["label"]
         data['sourceUrl'] = recipe["url"]
         data['imageUrl'] = recipe["image"]
+        data['mealType'] = recipe["mealType"]
+        data['dishType'] = recipe["dishType"]
+        data['cuisineType'] = recipe["cuisineType"]
         data['totalMinutes'] = recipe["totalTime"]
+        data['dietLabels'] = recipe["dietLabels"]
+        data['healthLabels'] = recipe["healthLabels"]
+        data['calories'] = recipe["totalNutrients"]["ENERC_KCAL"]["quantity"]
         data['totalCost'] =  ""
         data['numberServings'] = recipe["yield"]
-        data['ingredients'] = recipe["ingredientLines"]
+        data['ingredients'] = []
+        
+        for ingredient in recipe["ingredients"]:
+            json_ingredient = {}
+            json_ingredient['fullName'] = ingredient['text']
+            json_ingredient['name'] = ingredient['food']
+            json_ingredient['amount'] = ingredient['quantity']
+            json_ingredient['unit'] = ingredient['measure']
+            json_ingredient['category'] = ingredient['foodCategory']
+            json_ingredient['imageUrl'] = ingredient['image']
+            data['ingredients'].append(json_ingredient)
+        
         data['instructions'] = recipe["url"]
 
         json_recipes.append(data)
