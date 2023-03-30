@@ -1,24 +1,14 @@
-from flask import Flask, render_template, jsonify
 from bs4 import BeautifulSoup
-import requests
-import json
+import json, requests
 
-app = Flask(__name__)
+url = "https://www.themealdb.com/api/json/v1/1/search.php?s=rice"
+soup = BeautifulSoup(requests.get(url).text, "html.parser")
+soup.text
 
-@app.route("/")
-def home():
-    return render_template('home.html')
+recipes = []
 
-@app.route("/recipes/<query>", methods=['GET'])
-def search(query):
-    
-    url = "https://www.themealdb.com/api/json/v1/1/search.php?s=" + query
-    soup = BeautifulSoup(requests.get(url).text, "html.parser")
-    
-    recipes = []
-
-    meals = json.loads(soup.text)
-    for recipe in meals['meals']:
+meals = json.loads(soup.text)
+for recipe in meals['meals']:
         data = {}
         data['id'] = recipe["idMeal"]
         data['name'] = recipe["strMeal"]
@@ -53,8 +43,5 @@ def search(query):
         data['ingredients'] = ingredients
         data['instructions'] = recipe["strInstructions"]
         recipes.append(data)
-        
-    return jsonify(recipes)
-
-if __name__ == "__main__":
-    app.run()
+    
+print(recipes)
