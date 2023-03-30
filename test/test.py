@@ -8,5 +8,4 @@ json_recipes = []
 
 recipes = json.loads(soup.text)['hits']
 
-    
 print(len(recipes))
