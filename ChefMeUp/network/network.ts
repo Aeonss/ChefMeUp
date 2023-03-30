@@ -4,7 +4,7 @@ const baseURL = 'https://hmhing.pythonanywhere.com';
 
 async function fetchRecipes(query: string) {
   const encodedQuery = encodeURIComponent(query);
-  const response = await fetch(`${baseURL}/recipes/${encodedQuery}`);
+  const response = await fetch(`${baseURL}/recipes?q=${encodedQuery}`);
   const json = await response.json();
   if (response.ok) {
     console.log(json);

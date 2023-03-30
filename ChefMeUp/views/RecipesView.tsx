@@ -89,7 +89,6 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
     Network.fetchRecipes(search)
       .then(fetched => {
         setIsSearching(false);
-        fetched[0].instructions = [];
         setRecipes(fetched);
         if (fetched.length == 0) {
           setMessage(

@@ -45,15 +45,15 @@ const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
         <Text style={styles.sectionTitle}>Ingredients</Text>
         {recipe.ingredients.map((ingredient, index) => (
           <Text key={index} style={styles.listItem}>
-            {ingredient.amount} {ingredient.name}
+            {ingredient.amount} {ingredient.unit} {ingredient.name}
           </Text>
         ))}
         <Text style={styles.sectionTitle}>Instructions</Text>
-        {recipe.instructions.map(instruction => (
+        {/* {recipe.instructions.map(instruction => (
           <Text key={instruction.step} style={styles.listItem}>
             {instruction.step}. {instruction.description}
           </Text>
-        ))}
+        ))} */}
       </ScrollView>
     </SafeAreaView>
   );
