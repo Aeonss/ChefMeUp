@@ -2,7 +2,8 @@ from flask import Flask, render_template, jsonify, request
 from bs4 import BeautifulSoup
 import requests, json, random
 
-from Kroger.kroger import KrogerClient, KrogerServiceClient
+from GroceryStores.kroger import KrogerClient, KrogerServiceClient
+from GroceryStores.lidl import Lidl
 
 app = Flask(__name__)
 
@@ -46,10 +47,25 @@ def search_recipe():
 @app.route("/grocery", methods=['GET'])
 def search_zip():
     zipcode = request.args.get('zipcode')
+    
+    all_locations = []
+    
+    # Kroger
     TOKEN = "Y2hlZm1ldXAtNTA3OTJmZjdkOTNiYjRjYTk4MzIzMjcwMDRiNzRhN2M3NjMxMjczMjY2NTI4MDgzMTAwOmtqak9EcWdWUzdXT1FheWU4N1ZZY25URXhZWUxtc2ljQ0RkVDhmTl8="
     client = KrogerServiceClient(encoded_client_token=TOKEN)
-    location = client.get_locations(zipcode, within_miles=10, limit=10)
-    return jsonify(location)
+    locations = client.get_locations(zipcode, within_miles=10, limit=5)
+    
+    for location in locations:
+        all_locations.append(location)
+    
+    
+    # Lidl
+    locations = Lidl.get_locations(zipcode, 5)
+    for location in locations:
+        all_locations.append(location)
+        
+    
+    return jsonify(all_locations)
     
 
 @app.route("/grocery/item/", methods=['GET'])
@@ -64,7 +80,6 @@ def search_item(storeid, query):
     json_items = []
     for product in products:
         json_items.append(product)
-        
         
     return jsonify(json_items)
 

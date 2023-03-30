@@ -1,13 +1,12 @@
 from bs4 import BeautifulSoup
 import cloudscraper
-import json
+import json, requests
 
 class LidlClient:
     def get_locations(self, zipcode):        
-        scraper = cloudscraper.create_scraper(delay=10, browser='chrome')
         url = f"https://mobileapi.lidl.com/v1/stores?q={zipcode}"
-        soup = BeautifulSoup(scraper.get(url).text, "html.parser")
-        print(soup.encode('utf-8'))
+        soup = BeautifulSoup(requests.get(url).text, "html.parser")
+        print(soup.text.replace(" ", ""))
         
     def search_products(self, item, storeId):
         scraper = cloudscraper.create_scraper(delay=10, browser='chrome')
@@ -16,4 +15,4 @@ class LidlClient:
 
 client = LidlClient()
 client.get_locations(22030)
-client.search_products("cheese", "US01053")
+#client.search_products("cheese", "US01053")
