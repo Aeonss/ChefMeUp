@@ -15,9 +15,10 @@ npm run start
 Flask Server: https://hmhing.pythonanywhere.com/
 
 **Endpoint**
-* /recipes/(query)
-* /grocery/locations/(zipcode)
-* /grocery/item/(storeid)/(query)
+* /recipes?q=QUERY
+* /grocery?zipcode=ZIPCODE
+* /grocery/item?storeid=STOREID&q=QUERY
+
 
 **APIs**
 
