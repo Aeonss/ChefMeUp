@@ -15,8 +15,6 @@ headers = {
     'accept-language': 'ru,en-US;q=0.9,en;q=0.8,tr;q=0.7'
 }
 
-
-
 url = f"https://mobileapi.lidl.com/v1/stores?q=22030"
 
 opener = request.build_opener(proxy_support)

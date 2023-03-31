@@ -14,13 +14,36 @@ def home():
 @app.route("/recipes", methods=['GET'])
 def search_recipe():
     query = request.args.get('q')
+    diet = requestc.args.getlist('diet')
+    health = request.args.getlist('health')
+    cuisine = request.args.get('cuisine')
+    meal = request.args.get('meal')
+    dish = request.args.get('dish')
+    time = request.args.get('time') # MIN+, MIN-MAX, MAX; + = %2B
     
     api_id = ["0f91a740", "8d908447", "662fb153", "7126e21a", "6e34143b"]
     app_key = ["cfe00546378229eb14793ea770992f82", "b7c90f7191c23bdcff45f9c5399641d1", "611b4d03fad6c242cb395cc6cff93fed", "35f2d885abeef249acb520df8a78f8d2", "3ce229372925813abd79183c9ae5910d"]
     
     randnum = random.randint(0, 4)
     
-    url = f"https://api.edamam.com/api/recipes/v2?type=any&q={query}&app_id={api_id[randnum]}&app_key={app_key[randnum]}"
+    url = f"https://api.edamam.com/api/recipes/v2?type=any&q={query}&app_id={api_id[randnum]}&app_key={app_key[randnum]}&random=true"
+    
+    if len(diet) > 0:
+        for d in diet:
+            url += f"&diet={d}"
+    
+    if len(health) > 0:
+        for h in health:
+            url += f"&health={h}"
+    if cuisine != None:
+        url += f"&cuisineType={cuisine}"
+    if meal != None:
+        url += f"&mealType={meal}"
+    if dish != None:
+        url += f"&dishType={dish}"
+    if time != None:
+        url += f"&time={time}"
+    
     soup = BeautifulSoup(requests.get(url).text, "html.parser")
     
     json_recipes = []
