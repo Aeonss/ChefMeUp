@@ -32,28 +32,38 @@ Flask Server: https://hmhing.pythonanywhere.com/
 * Diet Labels<br>
 <img src=https://i.imgur.com/roY5Gci.png>
 <br>
+
 * Health Labels<br>
 <img src=https://i.imgur.com/wy985IT.png>
 <img src=https://i.imgur.com/FpnSkOu.png>
 <img src=https://i.imgur.com/c0SBK8Z.png>
 <br>
+
 * Cuisine Type<br>
 <img src=https://i.imgur.com/QK6yD7T.png>
 <img src=https://i.imgur.com/Uy6gy8s.png>
 <br>
+
 * Meal Type<br>
 <img src=https://i.imgur.com/bDGDUYH.png>
 <br>
+
 * Dish Type<br>
 <img src=https://i.imgur.com/Nwt8fWB.png>
 <img src=https://i.imgur.com/qzn4iak.png>
 <br>
+
 * Time
     * MIN%2B
     * MIN-MAX
     * MAX
+<br>
+<br>
 
 * /grocery?zipcode=ZIPCODE
+
+<br>
+
 * /item?storeid=STOREID&q=QUERY
 
 
