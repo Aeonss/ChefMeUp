@@ -34,23 +34,23 @@ Flask Server: https://hmhing.pythonanywhere.com/
 <br>
 
 * Health Labels<br>
-<img src=https://i.imgur.com/wy985IT.png>
-<img src=https://i.imgur.com/FpnSkOu.png>
-<img src=https://i.imgur.com/c0SBK8Z.png>
+<img src=https://i.imgur.com/wy985IT.png width=75% height=75%>
+<img src=https://i.imgur.com/FpnSkOu.png width=75% height=75%>
+<img src=https://i.imgur.com/c0SBK8Z.png width=75% height=75%>
 <br>
 
 * Cuisine Type<br>
-<img src=https://i.imgur.com/QK6yD7T.png>
-<img src=https://i.imgur.com/Uy6gy8s.png>
+<img src=https://i.imgur.com/QK6yD7T.png width=75% height=75%>
+<img src=https://i.imgur.com/Uy6gy8s.png width=75% height=75%>
 <br>
 
 * Meal Type<br>
-<img src=https://i.imgur.com/bDGDUYH.png>
+<img src=https://i.imgur.com/bDGDUYH.png width=75% height=75%>
 <br>
 
 * Dish Type<br>
-<img src=https://i.imgur.com/Nwt8fWB.png>
-<img src=https://i.imgur.com/qzn4iak.png>
+<img src=https://i.imgur.com/Nwt8fWB.png width=75% height=75%>
+<img src=https://i.imgur.com/qzn4iak.png width=75% height=75%>
 <br>
 
 * Time
