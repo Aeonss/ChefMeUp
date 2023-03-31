@@ -42,7 +42,14 @@ class KrogerClient:
             data = {}
             data['id'] = location['locationId']
             data['name'] = location['chain']
-            data['logoUrl'] = ""
+            
+            if location['chain'] == "HART":
+                data['logoUrl'] = "https://cdn.freebiesupply.com/logos/large/2x/harris-teeter-2-logo-png-transparent.png"
+            elif location['chain'] == "KROGER":
+                data['logoUrl'] = "https://brandslogos.com/wp-content/uploads/images/large/kroger-logo.png"
+            else:
+                data['logoUrl'] = ""
+                
             data['distance'] = ""
             data['address'] = location['address']['addressLine1'] + ", " + location['address']['city'] + ", " + location['address']['state'] + " " + location['address']['zipCode']
             
