@@ -26,7 +26,7 @@ Flask Server: https://hmhing.pythonanywhere.com/
 **Endpoint**
 * /recipes?q=QUERY
 * /recipes?q=QUERY&diet=DIET&health=HEALTH&cuisine=CUISINE&meal=MEAL&dish=DISH&time=TIME
-    * Example: /recipes?rice&health=alcohol-free&health=dairy-free&cuisine=mexican
+    * Example: /recipes?q=rice&health=alcohol-free&health=dairy-free&cuisine=mexican
 
 **Filters for recipes:**
 * Diet Labels<br>

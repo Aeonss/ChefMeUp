@@ -14,7 +14,7 @@ def home():
 @app.route("/recipes", methods=['GET'])
 def search_recipe():
     query = request.args.get('q')
-    diet = requestc.args.getlist('diet')
+    diet = request.args.getlist('diet')
     health = request.args.getlist('health')
     cuisine = request.args.get('cuisine')
     meal = request.args.get('meal')
