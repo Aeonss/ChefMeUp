@@ -30,23 +30,23 @@ Flask Server: https://hmhing.pythonanywhere.com/
 
 **Filters for recipes:**
 * Diet Labels<br>
-<img src=https://i.imgur.com/roY5Gci.png width=35% height=35%>
+<img src=https://i.imgur.com/roY5Gci.png>
 <br>
 * Health Labels<br>
-<img src=https://i.imgur.com/wy985IT.png width=50% height=50%>
-<img src=https://i.imgur.com/FpnSkOu.png width=50% height=50%>
-<img src=https://i.imgur.com/c0SBK8Z.png width=50% height=50%>
+<img src=https://i.imgur.com/wy985IT.png>
+<img src=https://i.imgur.com/FpnSkOu.png>
+<img src=https://i.imgur.com/c0SBK8Z.png>
 <br>
 * Cuisine Type<br>
-<img src=https://i.imgur.com/QK6yD7T.png width=35% height=35%>
-<img src=https://i.imgur.com/Uy6gy8s.png width=35% height=35%>
+<img src=https://i.imgur.com/QK6yD7T.png>
+<img src=https://i.imgur.com/Uy6gy8s.png>
 <br>
 * Meal Type<br>
-<img src=https://i.imgur.com/bDGDUYH.png width=35% height=35%>
+<img src=https://i.imgur.com/bDGDUYH.png>
 <br>
 * Dish Type<br>
-<img src=https://i.imgur.com/Nwt8fWB.png width=35% height=35%>
-<img src=https://i.imgur.com/qzn4iak.png width=35% height=35%>
+<img src=https://i.imgur.com/Nwt8fWB.png>
+<img src=https://i.imgur.com/qzn4iak.png>
 <br>
 * Time
     * MIN%2B
