@@ -10,6 +10,8 @@ Install [Android Studio](https://developer.android.com/studio)
 
 [Create a virtual device on Android Studio](https://developer.android.com/studio/run/managing-avds)
 
+Start the virtual device.
+
 Run the following commands:
 ```bash
 cd ChefMeUp
