@@ -62,7 +62,10 @@ def search_recipe():
         data['sourceUrl'] = recipe["url"]
         data['imageUrl'] = recipe["image"]
         data['mealType'] = recipe["mealType"]
-        data['dishType'] = recipe["dishType"]
+        try:
+            data['dishType'] = recipe["dishType"]
+        except:
+            pass
         data['cuisineType'] = recipe["cuisineType"]
         data['totalMinutes'] = recipe["totalTime"]
         data['dietLabels'] = recipe["dietLabels"]
