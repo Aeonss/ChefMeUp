@@ -40,7 +40,7 @@ description: String
 ### PricedIngredient
 ```
 ingredient: Ingredient
-prices: PuchaseOption[]
+prices: PurchaseOption[]
 ```
 
 ### PurchaseOption

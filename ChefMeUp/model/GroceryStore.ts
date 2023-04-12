@@ -1,4 +1,4 @@
-export interface Instruction {
+export interface GroceryStore {
     name: string;
     logoUrl: string;
     distance: number;
