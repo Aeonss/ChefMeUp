@@ -161,6 +161,7 @@ def calculateCost(recipe, client, location_ids):
     
     for location_id in location_ids:
         
+        data = {}
         price = 0.0
         
         for ingredient in recipe:
@@ -183,11 +184,14 @@ def calculateCost(recipe, client, location_ids):
             # Get first product item price (future: need to find product that fits amount needed)
             price += products[0]['price']
         
-        prices.append(price)
+        data['storeId'] = location_id
+        data['price'] = round(price, 2)
+        
+        prices.append(data)
     
     #print(prices)
     
-    return round(prices[0], 2)
+    return prices
 
 
 @app.route("/grocery", methods=['GET'])

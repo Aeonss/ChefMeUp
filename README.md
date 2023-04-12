@@ -54,6 +54,9 @@ Flask Server: https://hmhing.pythonanywhere.com/
 ```
 * Recipe lookup using the ID, and returns the json object recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
 * By default, the number of stores is 1, but you can change the limit with &stores=N
+    * Estimated cost of the recipe will give N json objects with:
+        * storeId
+        * price
 
 ```bash  
 /grocery?zipcode=ZIPCODE
