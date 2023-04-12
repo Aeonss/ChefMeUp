@@ -90,31 +90,7 @@ def search_recipe():
         json_recipes.append(data)
     
     return jsonify(json_recipes)
-
-
-def calculateCost(recipe, client, location_ids):
-    totalPrice = 0.0
-    for ingredient in recipe:
-        name = ingredient.get("name")
-        amount = ingredient.get("amount")
-        unit = ingredient.get("unit")
         
-        totalPrice += findPrice(name, amount, unit, client, location_ids)
-    
-    return round(totalPrice, 2)
-    
-
-def findPrice(name, amount, unit, client, location_ids):
-    for location_id in location_ids:
-        products = client.search_products(term=name, limit=5, location_id=location_id)
-        
-        # Need to compare amount and unit
-        # For now it gets the first grocery price
-        
-        # print(products[0]['description'])
-        # print(products[0]['price'])
-        
-        return products[0]['price']
 
 
 @app.route("/recipe", methods=['GET'])
@@ -160,8 +136,8 @@ def get_recipe():
         randnum = random.randint(0, 4)
         client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
         
-        # Find closest 5 store ids
-        locations = client.get_locations(zipcode, within_miles=10, limit=5)
+        # Find closest N store ids
+        locations = client.get_locations(zipcode, within_miles=10, limit=1)
         location_ids = []
         for location in locations:
             location_ids.append(location.get("id"))
@@ -175,6 +151,40 @@ def get_recipe():
     
     return jsonify(data)
 
+
+def calculateCost(recipe, client, location_ids):
+
+    prices = []
+    
+    for location_id in location_ids:
+        
+        price = 0.0
+        
+        for ingredient in recipe:
+            name = ingredient.get("name")
+            amount = ingredient.get("amount")
+            unit = ingredient.get("unit")
+            
+            # ~ 6 seconds for 1 store and 11 ingredients (11 searches)
+            # ~ 16 seconds for 2 stores and 11 ingredients (22 searches)
+            # ~ 21 seconds for 3 stores and 6 ingredients (18 searches)
+            # ~ 35 seconds for 5 stores and 11 ingredients (55 searches)
+            products = client.search_products(term=name, limit=5, location_id=location_id)
+            
+            # Need to compare amount and unit
+            # For now it gets the first grocery price
+            
+            # print(products[0]['description'])
+            # print(products[0]['price'])
+            
+            # Get first product item price (future: need to find product that fits amount needed)
+            price += products[0]['price']
+        
+        prices.append(price)
+    
+    #print(prices)
+    
+    return round(prices[0], 2)
 
 
 @app.route("/grocery", methods=['GET'])
