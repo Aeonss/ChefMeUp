@@ -4,15 +4,15 @@
 
 To run the React Native app, perform the following:
 
-Install [React Native](https://reactnative.dev/docs/environment-setup?guide=native). Make sure the ANDROID_HOME environmental variable is set. A system restart may be necessary.
+1. Install [React Native](https://reactnative.dev/docs/environment-setup?guide=native). Make sure the ANDROID_HOME environmental variable is set. A system restart may be necessary.
 
-Install [Android Studio](https://developer.android.com/studio)
+2. Install [Android Studio](https://developer.android.com/studio)
 
-[Create a virtual device on Android Studio](https://developer.android.com/studio/run/managing-avds)
+3. [Create a virtual device on Android Studio](https://developer.android.com/studio/run/managing-avds)
 
-Start the virtual device.
+4. Start the virtual device.
 
-Run the following commands:
+5. Run the following commands:
 ```bash
 cd ChefMeUp
 npm i   # if you haven't run this before
