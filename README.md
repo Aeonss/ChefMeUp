@@ -28,7 +28,7 @@ Flask Server: https://hmhing.pythonanywhere.com/
 ```bash
 /recipes?q=QUERY
 ```
-* Returns queried list of recipes, including:
+* Returns a json list of json object recipes, including:
     * id
     * name
     * sourceUrl
@@ -52,12 +52,12 @@ Flask Server: https://hmhing.pythonanywhere.com/
 ```bash
 /recipe?id=ID&zipcode=ZIPCODE 
 ```
-* Recipe lookup using the ID, and returns the recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
+* Recipe lookup using the ID, and returns the json object recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
 
 ```bash  
 /grocery?zipcode=ZIPCODE
 ```
-* Returns a list of grocery stores in the zip code
+* Returns a json list of json object grocery stores in the zip code
     * id
     * name
     * chain
@@ -67,7 +67,7 @@ Flask Server: https://hmhing.pythonanywhere.com/
 ```bash  
 /item?storeid=STOREID&q=QUERY
 ```
-* Returns a queried list of items in the given store (with the storeId)
+* Returns a json list of json objects in the given store (with the storeId)
     * storeId
     * price
     * description
