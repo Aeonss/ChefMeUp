@@ -24,44 +24,65 @@ npm run start
 Flask Server: https://hmhing.pythonanywhere.com/
 
 ## Endpoints
-* /recipes?q=QUERY
-    * Returns queried list of recipes, including:
-        * id
-        * name
-        * sourceUrl
-        * imageUrl
-        * mealType
-        * dishType
-        * cuisineType
-        * totalMinutes
-        * dietLabels
-        * healthLabels
-        * calories
-        * numberServings
-        * ingredients
-        * instructions
-* /recipes?q=QUERY&diet=DIET&health=HEALTH&cuisine=CUISINE&meal=MEAL&dish=DISH&time=TIME
-    * Example: /recipes?q=rice&health=alcohol-free&health=dairy-free&cuisine=mexican
-* /recipe?id=ID&zipcode=ZIPCODE 
-    * Recipe lookup using the ID, and returns the recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
-* /grocery?zipcode=ZIPCODE
-    * Returns a list of grocery stores in the zip code
-        * id
-        * name
-        * chain
-        * logoUrl
-        * address
-* /item?storeid=STOREID&q=QUERY
-    * Returns a queried list of items in the given store (with the storeId)
-        * storeId
-        * price
-        * description
-        * imageUrl
-        * amount
-* /distance?lon1=LON1&lat1=LAT1&lon2=LON2&lat2=LAT2
-    * Returns the distance between the 2 coordinates in miles
-* /address2coord?address=STREET, CITY, STATE
-    * Returns a json object with the lat and the lon of the address
+
+```bash
+/recipes?q=QUERY
+```
+* Returns queried list of recipes, including:
+    * id
+    * name
+    * sourceUrl
+    * imageUrl
+    * mealType
+    * dishType
+    * cuisineType
+    * totalMinutes
+    * dietLabels
+    * healthLabels
+    * calories
+    * numberServings
+    * ingredients
+    * instructions
+```bash
+/recipes?q=QUERY&diet=DIET&health=HEALTH&cuisine=CUISINE&meal=MEAL&dish=DISH&time=TIME
+```
+
+* Example: /recipes?q=rice&health=alcohol-free&health=dairy-free&cuisine=mexican
+
+```bash
+/recipe?id=ID&zipcode=ZIPCODE 
+```
+* Recipe lookup using the ID, and returns the recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
+
+```bash  
+/grocery?zipcode=ZIPCODE
+```
+* Returns a list of grocery stores in the zip code
+    * id
+    * name
+    * chain
+    * logoUrl
+    * address
+
+```bash  
+/item?storeid=STOREID&q=QUERY
+```
+* Returns a queried list of items in the given store (with the storeId)
+    * storeId
+    * price
+    * description
+    * imageUrl
+    * amount
+
+```bash  
+/distance?lon1=LON1&lat1=LAT1&lon2=LON2&lat2=LAT2
+```
+* Returns the distance between the 2 coordinates in miles
+
+```bash  
+/address2coord?address=STREET, CITY, STATE
+```
+* Returns a json object with the lat and the lon of the address
 
 
 ## Filters for recipes:
