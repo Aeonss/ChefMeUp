@@ -50,9 +50,10 @@ Flask Server: https://hmhing.pythonanywhere.com/
 * Example: /recipes?q=rice&health=alcohol-free&health=dairy-free&cuisine=mexican
 
 ```bash
-/recipe?id=ID&zipcode=ZIPCODE 
+/recipe?id=ID&zipcode=ZIPCODE&stores=STORES
 ```
 * Recipe lookup using the ID, and returns the json object recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
+* By default, the number of stores is 1, but you can change the limit with &stores=N
 
 ```bash  
 /grocery?zipcode=ZIPCODE

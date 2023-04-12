@@ -97,6 +97,7 @@ def search_recipe():
 def get_recipe():
     recipe_id = request.args.get('id')
     zipcode = request.args.get('zipcode')
+    stores = request.args.get('stores')
     
     randnum = random.randint(0, 4)
     url = f"https://api.edamam.com/api/recipes/v2/{recipe_id}?type=public&app_id={api_id[randnum]}&app_key={app_key[randnum]}&random=true"
@@ -136,8 +137,11 @@ def get_recipe():
         randnum = random.randint(0, 4)
         client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
         
-        # Find closest N store ids
-        locations = client.get_locations(zipcode, within_miles=10, limit=1)
+        if stores == None:
+            stores = 2
+        
+        # Find closest store ids
+        locations = client.get_locations(zipcode, within_miles=10, limit=stores)
         location_ids = []
         for location in locations:
             location_ids.append(location.get("id"))
