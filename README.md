@@ -25,11 +25,39 @@ Flask Server: https://hmhing.pythonanywhere.com/
 
 ## Endpoints
 * /recipes?q=QUERY
+    * Returns queried list of recipes, including:
+        * id
+        * name
+        * sourceUrl
+        * imageUrl
+        * mealType
+        * dishType
+        * cuisineType
+        * totalMinutes
+        * dietLabels
+        * healthLabels
+        * calories
+        * numberServings
+        * ingredients
+        * instructions
 * /recipes?q=QUERY&diet=DIET&health=HEALTH&cuisine=CUISINE&meal=MEAL&dish=DISH&time=TIME
     * Example: /recipes?q=rice&health=alcohol-free&health=dairy-free&cuisine=mexican
 * /recipe?id=ID&zipcode=ZIPCODE 
+    * Recipe lookup using the ID, and returns the recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
 * /grocery?zipcode=ZIPCODE
+    * Returns a list of grocery stores in the zip code
+        * id
+        * name
+        * chain
+        * logoUrl
+        * address
 * /item?storeid=STOREID&q=QUERY
+    * Returns a queried list of items in the given store (with the storeId)
+        * storeId
+        * price
+        * description
+        * imageUrl
+        * amount
 
 
 ## Filters for recipes:

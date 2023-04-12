@@ -51,7 +51,6 @@ class KrogerClient:
             else:
                 data['logoUrl'] = ""
                 
-            data['distance'] = ""
             data['address'] = location['address']['addressLine1'] + ", " + location['address']['city'] + ", " + location['address']['state'] + " " + location['address']['zipCode']
             
             json_locations.append(data)
