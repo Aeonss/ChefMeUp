@@ -60,6 +60,10 @@ Flask Server: https://hmhing.pythonanywhere.com/
 <br>
 <br>
 
+* /recipe?id=ID&zipcode=ZIPCODE
+
+<br>
+
 * /grocery?zipcode=ZIPCODE
 
 <br>

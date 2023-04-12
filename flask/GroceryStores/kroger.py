@@ -26,6 +26,7 @@ class KrogerClient:
             data['price'] = item['items'][0]['price']['regular']
             data['description'] = item['description']
             data['imageUrl'] = item['images'][0]['sizes'][0]['url']
+            data['amount'] = item['items'][0]['size']
             json_item.append(data)
         return json_item
 
