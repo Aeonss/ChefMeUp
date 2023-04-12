@@ -153,7 +153,6 @@ def get_recipe():
 
 
 def calculateCost(recipe, client, location_ids):
-
     prices = []
     
     for location_id in location_ids:
@@ -220,6 +219,42 @@ def search_item():
         json_items.append(product)
         
     return jsonify(json_items)
+
+
+@app.route("/distance", methods=['GET'])
+def calc_distance():
+    lon1 = request.args.get('lon1')
+    lat1 = request.args.get('lat1')
+    
+    lon2 = request.args.get('lon2')
+    lat2 = request.args.get('lat2')
+    
+    r = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon1},{lat1};{lon2},{lat2}?overview=false")
+
+    route = json.loads(r.content).get("routes")[0]
+
+    # Convert feet to miles
+    distance = route.get("legs")[0]['distance'] / 1609
+    
+    return str(round(distance, 2))
+
+
+
+@app.route("/address2coord", methods=['GET'])
+def addressToCoord():
+    address = request.args.get('address')
+    
+    parsed_address = address.replace(" ", "+")
+
+    r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
+    data = json.loads(r.content)
+    
+    json_data = {}
+    json_data['lat'] = data[0]["lat"]
+    json_data['lon'] = data[0]["lon"]
+    
+    return jsonify(json_data)
+
 
 if __name__ == "__main__":
     app.run()

@@ -58,6 +58,10 @@ Flask Server: https://hmhing.pythonanywhere.com/
         * description
         * imageUrl
         * amount
+* /distance?lon1=LON1&lat1=LAT1&lon2=LON2&lat2=LAT2
+    * Returns the distance between the 2 coordinates in miles
+* /address2coord?address=STREET, CITY, STATE
+    * Returns a json object with the lat and the lon of the address
 
 
 ## Filters for recipes:

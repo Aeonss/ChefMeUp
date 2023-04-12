@@ -1,14 +1,32 @@
-from GroceryStores.kroger import KrogerServiceClient
-import random
+import requests
+import json
 
-TOKEN = ["Y2hlZm1ldXAtNTA3OTJmZjdkOTNiYjRjYTk4MzIzMjcwMDRiNzRhN2M3NjMxMjczMjY2NTI4MDgzMTAwOmtqak9EcWdWUzdXT1FheWU4N1ZZY25URXhZWUxtc2ljQ0RkVDhmTl8=", "YXNkYXNkLWE4ZjVmMTY3ZjQ0ZjQ5NjRlNmM5OThkZWU4MjcxMTBjNDgxNTY1NzM4MzI1NTQ5OTUyMjp0ZTRCT1luRjd0aFlHYVZsN1JIVzVyV0hkanNMSkpUVXQyWk93MmFB", "YXNkYXMtMGFhMWVhOWE1YTA0Yjc4ZDQ1ODFkZDZkMTc3NDI2Mjc4MjEyODMzMTAxNzQ5MDI1NjMxOmVSQlVHX0xoU09famwteXlOaE1iNHFSa2VEdHh2VC1EVUhzM1Y5M3M=", "YTA5b2thZm8tNmU5MjI4ZWE4Yzg1Y2VlYWU5MjI3NDA5ZWU0MjFjNDg3NDY5NzIwOTk1NTA0ODA3MDA0OkZkVnBDSHJnWm9PWjZabkQ2eW9VRnhISTJTM1JGSHZ5a21ESGRLcEk=", "YXNkcHZuYS1iYWM4ZTg2ZGQ4ZGJmMTBlZWNiOGRlMGYyMDFhMjU1MjQ5NDYyMDQzOTgwMjczOTY2ODk6ZnIwcE1USE15M0VQcGFqWE1TZVlPeF92UFo5bUxxaWNFeFhNYkZucw=="]
-randnum = random.randint(0, 4)
+def findDistance(lon1, lat1, lon2, lat2):
+    r = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon1},{lat1};{lon2},{lat2}?overview=false")
 
-client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
-locations = client.get_locations(22030, within_miles=10, limit=5)
+    route = json.loads(r.content).get("routes")[0]
+
+    # Convert feet to miles
+    distance = route.get("legs")[0]['distance'] / 1609
+    
+    print(distance)
+    return distance
 
 
-products = client.search_products(term="beef", limit=5, location_id=locations[0].get("id"))
+
+def addressToCoord(address):
+    parsed_address = address.replace(" ", "+")
+
+    r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
+    data = json.loads(r.content)
+    
+    lat = data[0]["lat"]
+    lon = data[0]["lon"]
+    return (lon, lat)
 
 
-print(products)
+coord1 = addressToCoord("400 Broce Dr, Blacksburg, VA")
+coord2 = addressToCoord("Tysons Corner Center, 1961 Chain Bridge Rd, Tysons, VA")
+
+findDistance(coord1[0], coord1[1], coord2[0], coord2[1])
+#print(findDistance(coord1[0], coord1[1], coord2[0], coord2[1]))
