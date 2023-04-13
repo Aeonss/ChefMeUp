@@ -81,12 +81,12 @@ Flask Server: https://hmhing.pythonanywhere.com/
 ```bash  
 /distance?lon1=LON1&lat1=LAT1&lon2=LON2&lat2=LAT2
 ```
-* Returns the distance between the 2 coordinates in miles
+* Returns the *driving* distance between the 2 coordinates in miles using OSRM API.
 
 ```bash  
 /address2coord?address=STREET, CITY, STATE
 ```
-* Returns a json object with the lat and the lon of the address
+* Returns a json object with the lat and the lon of the address using OpenStreetMap API.
 
 
 ## Filters for recipes:
@@ -243,7 +243,8 @@ Flask Server: https://hmhing.pythonanywhere.com/
 ## APIs
 * [Edamam](https://developer.edamam.com/edamam-recipe-api)
 * [Kroger](https://developer.kroger.com/reference/)
-
+* [OSRM (Open Source Routing Machine)](http://project-osrm.org/docs/v5.5.1/api/#general-options)
+* [OpenStreetMap](https://wiki.openstreetmap.org/wiki/API)
 
 ## Notes
 Information about the data models and tags are available in `/info`
