@@ -45,12 +45,16 @@ Flask Server: https://hmhing.pythonanywhere.com/
     * instructions
 ```bash
 /recipes?q=QUERY&diet=DIET&health=HEALTH&cuisine=CUISINE&meal=MEAL&dish=DISH&time=TIME
+
+Required: query
 ```
 
 * Example: /recipes?q=rice&health=alcohol-free&health=dairy-free&cuisine=mexican
 
 ```bash
 /recipe?id=ID&zipcode=ZIPCODE&stores=STORES
+
+Required: id, zipcode
 ```
 * Recipe lookup using the ID, and returns the json object recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
 * By default, the number of stores is 2, but you can change the limit with &stores=N
@@ -61,6 +65,8 @@ Flask Server: https://hmhing.pythonanywhere.com/
 
 ```bash
 /price?item=ITEM&item=ITEM&item=ITEM&zipcode=ZIPCODE&stores=5
+
+Required: item, zipcode
 ```
 * Looks up the estimate price for a list of items
 * By default, the amount of stores is 2
@@ -72,6 +78,8 @@ Flask Server: https://hmhing.pythonanywhere.com/
 ```bash  
 /grocery?zipcode=ZIPCODE
 /grocery?zipcode=ZIPCODE&stores=5&radius=10
+
+Required: zipcode
 ```
 * By default, number of stores is 5 and radius is 10 miles
 * Returns a json list of json object grocery stores in the zip code
@@ -83,6 +91,8 @@ Flask Server: https://hmhing.pythonanywhere.com/
 
 ```bash  
 /item?storeid=STOREID&q=QUERY
+
+Required: storeId, query
 ```
 * Returns a json list of json objects in the given store (with the storeId)
     * storeId
@@ -93,11 +103,15 @@ Flask Server: https://hmhing.pythonanywhere.com/
 
 ```bash  
 /distance?lon1=LON1&lat1=LAT1&lon2=LON2&lat2=LAT2
+
+Required: lon1, lat1, lon2, lat2
 ```
 * Returns the *driving* distance between the 2 coordinates in miles using OSRM API.
 
 ```bash  
 /address2coord?address=STREET, CITY, STATE
+
+Required: address
 ```
 * Returns a json object with the lat and the lon of the address using OpenStreetMap API.
 
