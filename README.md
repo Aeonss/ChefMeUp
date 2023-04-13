@@ -241,10 +241,10 @@ Flask Server: https://hmhing.pythonanywhere.com/
 
 
 ## APIs
-* [Edamam -> Recipes](https://developer.edamam.com/edamam-recipe-api)
-* [Kroger -> Grocery Stores](https://developer.kroger.com/reference/)
-* [OSRM (Open Source Routing Machine) -> Routing Distance](http://project-osrm.org/docs/v5.5.1/api/#general-options)
-* [OpenStreetMap -> Converting address to coordinates](https://wiki.openstreetmap.org/wiki/API)
+* [Edamam](https://developer.edamam.com/edamam-recipe-api)
+* [Kroger](https://developer.kroger.com/reference/)
+* [OSRM (Open Source Routing Machine)](http://project-osrm.org/docs/v5.5.1/api/#general-options)
+* [OpenStreetMap](https://wiki.openstreetmap.org/wiki/API)
 
 ## Notes
 Information about the data models and tags are available in `/info`
