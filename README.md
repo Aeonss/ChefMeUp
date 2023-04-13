@@ -19,6 +19,16 @@ npm i   # if you haven't run this before
 npm run start
 ```
 
+Common Errors:
+
+```bash
+Error: Unable to find react-native-picker
+Solution: npm i react-native-web
+
+Error: Cannot read property SafeAreaProviderCompat
+Solution: yarn add react-native-screens
+```
+
 
 ## Backend
 Flask Server: https://hmhing.pythonanywhere.com/
