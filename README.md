@@ -27,6 +27,9 @@ Flask Server: https://hmhing.pythonanywhere.com/
 
 ```bash
 /recipes?q=QUERY
+/recipes?q=QUERY&diet=DIET&health=HEALTH&cuisine=CUISINE&meal=MEAL&dish=DISH&time=TIME
+
+Required: query
 ```
 * Returns a json list of json object recipes, including:
     * id
@@ -43,11 +46,7 @@ Flask Server: https://hmhing.pythonanywhere.com/
     * numberServings
     * ingredients
     * instructions
-```bash
-/recipes?q=QUERY&diet=DIET&health=HEALTH&cuisine=CUISINE&meal=MEAL&dish=DISH&time=TIME
 
-Required: query
-```
 
 * Example: /recipes?q=rice&health=alcohol-free&health=dairy-free&cuisine=mexican
 
