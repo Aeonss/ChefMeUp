@@ -11,14 +11,15 @@ api_id = ["0f91a740", "8d908447", "662fb153", "7126e21a", "6e34143b"]
 app_key = ["cfe00546378229eb14793ea770992f82", "b7c90f7191c23bdcff45f9c5399641d1", "611b4d03fad6c242cb395cc6cff93fed", "35f2d885abeef249acb520df8a78f8d2", "3ce229372925813abd79183c9ae5910d"]
 
 
-
-
 app = Flask(__name__)
+
 
 @app.route("/")
 def home():
     return render_template('home.html')
 
+
+# Gets a list of recipes with the given search term
 @app.route("/recipes", methods=['GET'])
 def search_recipe():
     query = request.args.get('q')
@@ -92,7 +93,7 @@ def search_recipe():
     return jsonify(json_recipes)
         
 
-
+# Gets a recipe via an id and estimates the cost of the recipe
 @app.route("/recipe", methods=['GET'])
 def get_recipe():
     recipe_id = request.args.get('id')
@@ -146,7 +147,7 @@ def get_recipe():
         for location in locations:
             location_ids.append(location.get("id"))
         
-        data['totalCost'] = calculateCost(data['ingredients'], client, location_ids)
+        data['totalCost'] = calculateCost(data['ingredients'], client, location_ids, True)
         
     else:
         data['totalCost'] = ""
@@ -156,7 +157,8 @@ def get_recipe():
     return jsonify(data)
 
 
-def calculateCost(recipe, client, location_ids):
+# Calculates the cost of a recipe of list of items
+def calculateCost(recipe, client, location_ids, isRecipe):
     prices = []
     
     for location_id in location_ids:
@@ -165,10 +167,14 @@ def calculateCost(recipe, client, location_ids):
         price = 0.0
         
         for ingredient in recipe:
-            name = ingredient.get("name")
-            amount = ingredient.get("amount")
-            unit = ingredient.get("unit")
             
+            if isRecipe:
+                name = ingredient.get("name")
+                amount = ingredient.get("amount")
+                unit = ingredient.get("unit")
+            else:
+                name = ingredient
+                
             # ~ 6 seconds for 1 store and 11 ingredients (11 searches)
             # ~ 16 seconds for 2 stores and 11 ingredients (22 searches)
             # ~ 21 seconds for 3 stores and 6 ingredients (18 searches)
@@ -189,21 +195,27 @@ def calculateCost(recipe, client, location_ids):
         
         prices.append(data)
     
-    #print(prices)
-    
     return prices
 
 
+# Gets a list of grocery stores in the given zipcode with an optional param of stores and radius
 @app.route("/grocery", methods=['GET'])
 def search_zip():
     zipcode = request.args.get('zipcode')
+    stores = request.args.get('stores')
+    radius = request.args.get('radius')
+    
+    if stores == None:
+        stores = 5
+    if radius == None:
+        radius = 10
     
     all_locations = []
     
     # Kroger
     randnum = random.randint(0, 4)
     client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
-    locations = client.get_locations(zipcode, within_miles=10, limit=5)
+    locations = client.get_locations(zipcode, within_miles=radius, limit=stores)
     
     # Return Kroger locations
     for location in locations:
@@ -211,7 +223,8 @@ def search_zip():
     
     return jsonify(all_locations)
     
-
+    
+# Gets the list of products from a given item name and storeId
 @app.route("/item", methods=['GET'])
 def search_item():
     storeid = request.args.get('storeid')
@@ -229,6 +242,32 @@ def search_item():
     return jsonify(json_items)
 
 
+# Gets the price of a list of items
+@app.route("/price", methods=['GET'])
+def get_price():
+    ingredients = request.args.getlist('item')
+    zipcode = request.args.get('zipcode')
+    stores = request.args.get('stores')
+    
+    # Kroger
+    randnum = random.randint(0, 4)
+    client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
+        
+    if stores == None:
+        stores = 2
+        
+    locations = client.get_locations(zipcode, within_miles=10, limit=stores)
+    location_ids = []
+    for location in locations:
+        location_ids.append(location.get("id"))
+
+    prices = calculateCost(ingredients, client, location_ids, False)
+
+    return jsonify(prices)
+    
+    
+
+# Gets the distance in miles between 2 coordinates
 @app.route("/distance", methods=['GET'])
 def calc_distance():
     lon1 = request.args.get('lon1')
@@ -247,7 +286,7 @@ def calc_distance():
     return str(round(distance, 2))
 
 
-
+# Gets the latitude and longitude coordinates of an address
 @app.route("/address2coord", methods=['GET'])
 def addressToCoord():
     address = request.args.get('address')

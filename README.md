@@ -58,9 +58,22 @@ Flask Server: https://hmhing.pythonanywhere.com/
         * storeId
         * price
 
+
+```bash
+/price?item=ITEM&item=ITEM&item=ITEM&zipcode=ZIPCODE&stores=5
+```
+* Looks up the estimate price for a list of items
+* By default, the amount of stores is 2
+    * Estimate cost of the list of items will give N json objects with:
+        * storeId
+        * price
+
+
 ```bash  
 /grocery?zipcode=ZIPCODE
+/grocery?zipcode=ZIPCODE&stores=5&radius=10
 ```
+* By default, number of stores is 5 and radius is 10 miles
 * Returns a json list of json object grocery stores in the zip code
     * id
     * name
