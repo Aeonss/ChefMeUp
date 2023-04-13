@@ -1,36 +1,32 @@
-from GroceryStores.lidl import Lidl
+import requests
 import json
-from urllib import request
-from bs4 import BeautifulSoup
-from fp.fp import FreeProxy
+
+def findDistance(lon1, lat1, lon2, lat2):
+    r = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon1},{lat1};{lon2},{lat2}?overview=false")
+
+    route = json.loads(r.content).get("routes")[0]
+
+    # Convert feet to miles
+    distance = route.get("legs")[0]['distance'] / 1609
+    
+    print(distance)
+    return distance
 
 
-proxy = FreeProxy(country_id=['US']).get()
 
-proxy_support = request.ProxyHandler({"https" : proxy})
+def addressToCoord(address):
+    parsed_address = address.replace(" ", "+")
 
-user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36'
-headers = {
-    'User-Agent': user_agent,
-    'accept-language': 'ru,en-US;q=0.9,en;q=0.8,tr;q=0.7'
-}
-
-url = f"https://mobileapi.lidl.com/v1/stores?q=22030"
-
-opener = request.build_opener(proxy_support)
-request.install_opener(opener)
-
-req = request.Request(url, headers=headers)
-
-try:
-    response = request.urlopen(req).read()
-    soup = BeautifulSoup(response, "html.parser")
-    locations = soup.text.replace(" ", "")
+    r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
+    data = json.loads(r.content)
+    
+    lat = data[0]["lat"]
+    lon = data[0]["lon"]
+    return (lon, lat)
 
 
-    for location in json.loads(locations)['results']:
-        
-        print(json.dumps(location))
-        break
-except Exception as e:
-    print(e)
+coord1 = addressToCoord("400 Broce Dr, Blacksburg, VA")
+coord2 = addressToCoord("Tysons Corner Center, 1961 Chain Bridge Rd, Tysons, VA")
+
+findDistance(coord1[0], coord1[1], coord2[0], coord2[1])
+#print(findDistance(coord1[0], coord1[1], coord2[0], coord2[1]))
