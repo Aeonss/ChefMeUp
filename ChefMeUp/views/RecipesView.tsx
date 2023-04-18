@@ -1,5 +1,5 @@
 import React from 'react';
-import { SortBy } from 'react-instantsearch-dom';
+// import { SortBy } from 'react-instantsearch-dom';
 import {
   Button,
   View,
@@ -14,7 +14,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import { Dropdown } from 'react-native-material-dropdown';
+// import { Dropdown } from 'react-native-material-dropdown';
 import {Recipe} from '../model/Recipe';
 import sampleRecipes from '../model/sampleRecipes';
 import {useState} from 'react';
@@ -77,43 +77,39 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
   };
   const [selectedFilter, setSelectedFilter] = useState();
   const dropDownData = [
-      { value: 'Option 1' },
-      { value: 'Option 2' },
-      { value: 'Option 3' },
-      // Add more options as needed
-    ];
-  const sortResults = (filter) => {
-      if(filter=="time")
-      {
-        console.log("time");
-        console.log("price")
-        recipes.sort((obj1, obj2) => {
-            return obj1.totalMinutes - obj2.totalMinutes;
-          });
-
-          setRecipes([...recipes]); // update
-      } else if(filter == "price")
-      {
-        console.log("price")
-        recipes.sort((obj1, obj2) => {
-            return obj1.totalCost - obj2.totalCost;
-          });
-
-          setRecipes([...recipes]); // update
-      } else {
-        console.log("relevance")
-      }
-    };
-  const sortListASC = () => {
-
-    };
-
-    const sortListDES = () => {
+    {value: 'Option 1'},
+    {value: 'Option 2'},
+    {value: 'Option 3'},
+    // Add more options as needed
+  ];
+  const sortResults = (filter: string) => {
+    if (filter == 'time') {
+      console.log('time');
+      console.log('price');
       recipes.sort((obj1, obj2) => {
-        return obj2.id - obj1.id;
+        return obj1.totalMinutes - obj2.totalMinutes;
       });
-      setRecipes([...recipes]);
-    };
+
+      setRecipes([...recipes]); // update
+    } else if (filter == 'price') {
+      console.log('price');
+      recipes.sort((obj1, obj2) => {
+        return obj1.totalCost - obj2.totalCost;
+      });
+
+      setRecipes([...recipes]); // update
+    } else {
+      console.log('relevance');
+    }
+  };
+  const sortListASC = () => {};
+
+  const sortListDES = () => {
+    recipes.sort((obj1, obj2) => {
+      return obj2.id - obj1.id;
+    });
+    setRecipes([...recipes]);
+  };
   function getOnClick(recipe: Recipe) {
     return () => {
       navigation.navigate('RecipeDetailView', {recipe: recipe});
@@ -151,25 +147,24 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       {message.length > 0 && <Text style={styles.message}>{message}</Text>}
       {recipes.length > 0 && (
         <View style={styles.view}>
-            <View>
-                <Text style={styles.sortLabel}>Sort By:</Text>
-                <Picker
-                  selectedValue={selectedFilter}
-                  onValueChange={(itemValue, itemIndex) => {
-                    setSelectedFilter(itemValue)
-                    sortResults(itemValue)
-                    }
-                  }>
-                  <Picker.Item label="Relevance" value="relevance" />
-                  <Picker.Item label="Time" value="time" />
-                  <Picker.Item label="Price" value="price" />
-                </Picker>
-            </View>
-            <FlatList
-              data={recipes}
-              renderItem={({item}) => RecipeCard(item, getOnClick(item))}
-              keyExtractor={item => item.id.toString()}
-            />
+          <View>
+            <Text style={styles.sortLabel}>Sort By:</Text>
+            <Picker
+              selectedValue={selectedFilter}
+              onValueChange={(itemValue, itemIndex) => {
+                setSelectedFilter(itemValue);
+                sortResults(itemValue === undefined ? "" : itemValue);
+              }}>
+              <Picker.Item label="Relevance" value="relevance" />
+              <Picker.Item label="Time" value="time" />
+              <Picker.Item label="Price" value="price" />
+            </Picker>
+          </View>
+          <FlatList
+            data={recipes}
+            renderItem={({item}) => RecipeCard(item, getOnClick(item))}
+            keyExtractor={item => item.id.toString()}
+          />
         </View>
       )}
     </View>
@@ -239,9 +234,9 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
   },
   sortLabel: {
-      margin: 10,
-      fontSize: 16
-    },
+    margin: 10,
+    fontSize: 16,
+  },
   view: {
     height: '100%',
   },
