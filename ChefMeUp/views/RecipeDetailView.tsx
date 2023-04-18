@@ -13,6 +13,9 @@ import {
 
 import {Recipe} from '../model/Recipe';
 import {RecipesDetailViewProps} from './RecipeStackParams';
+import {RecipeGroceriesView} from './RecipeGroceriesView';
+import {RecipesGroceriesViewProps} from './GroceriesStackParams';
+import {RecipePricesViewProps} from './RecipeStackParams'
 
 type RecipeDetailViewProps = {
   recipe: Recipe;
@@ -37,7 +40,7 @@ const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
           <Text style={styles.info}>Quantity:</Text>
           <Text style={styles.info}>{recipe.numberServings} servings</Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('RecipePricesView', {recipe: recipe})}>
           <Text style={styles.button}>
             Check prices at your local grocery store
           </Text>

@@ -1,10 +1,11 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import RecipeDetailView from './RecipeDetailView';
 import {RecipeStackParam} from './RecipeStackParams';
+import RecipesView from './RecipesView';
+import RecipePricesView from './RecipePricesView'
 
 const Stack = createStackNavigator<RecipeStackParam>();
 
-import RecipesView from './RecipesView';
 
 const RecipesViewWrapper = () => {
   return (
@@ -26,10 +27,21 @@ const RecipeDetailViewWrapper = () => {
   );
 };
 
+const RecipePricesViewWrapper = () => {
+  return (
+    <Stack.Screen
+      name="RecipePricesView"
+      component={RecipePricesView}
+      options={{title: 'Recipe Grocery Prices'}}
+    />
+  );
+};
+
 const RecipesStack = () => (
   <Stack.Navigator>
     {RecipesViewWrapper()}
     {RecipeDetailViewWrapper()}
+    {RecipePricesViewWrapper()}
   </Stack.Navigator>
 );
 

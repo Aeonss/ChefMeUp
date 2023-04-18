@@ -4,20 +4,13 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {createStackNavigator} from '@react-navigation/stack';
 import {Text, Image} from 'react-native';
 import RecipeStack from './views/RecipesStack';
+import GroceriesStack from './views/GroceriesStack';
 
 const Tab = createMaterialBottomTabNavigator();
 
-const SecondStack = () => (
-    <Text>Hello</Text>
-);
 
 const ThirdStack = () => (
     <Text>Hello</Text>
-);
-
-
-const SecondScreen = () => (
-  <Text style={{textAlign: 'center'}}>Second Screen</Text>
 );
 const ThirdScreen = () => (
   <Text style={{textAlign: 'center'}}>Third Screen</Text>
@@ -39,6 +32,7 @@ const App = () => {
         screenOptions={{
           tabBarColor: 'black',
         }}>
+
         <Tab.Screen
           name="First"
           component={RecipeStack}
@@ -52,9 +46,10 @@ const App = () => {
             ),
           }}
         />
+
         <Tab.Screen
           name="Second"
-          component={SecondStack}
+          component={GroceriesStack}
           options={{
             tabBarLabel: 'Groceries',
             tabBarIcon: ({color, focused}) => (
@@ -65,6 +60,7 @@ const App = () => {
             ),
           }}
         />
+
         <Tab.Screen
           name="Third"
           component={ThirdStack}
