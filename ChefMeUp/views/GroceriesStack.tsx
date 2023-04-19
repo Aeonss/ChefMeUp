@@ -9,7 +9,7 @@ const RecipeGroceriesViewWrapper = () => {
     <Stack.Screen
       name="RecipeGroceriesView"
       component={RecipeGroceriesView}
-      options={{title: 'GROCERIES'}}
+      options={{title: 'Groceries'}}
     />
   );
 };

@@ -7,15 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   SafeAreaView,
-  Button,
+  Linking,
   TouchableOpacity,
 } from 'react-native';
 
 import {Recipe} from '../model/Recipe';
 import {RecipesDetailViewProps} from './RecipeStackParams';
-import {RecipeGroceriesView} from './RecipeGroceriesView';
-import {RecipesGroceriesViewProps} from './GroceriesStackParams';
-import {RecipePricesViewProps} from './RecipeStackParams'
 
 type RecipeDetailViewProps = {
   recipe: Recipe;
@@ -23,6 +20,16 @@ type RecipeDetailViewProps = {
 
 const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
   const {recipe} = route.params;
+  const openUrl = () => {
+    const url = recipe.instructions;
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{recipe.name}</Text>
@@ -52,11 +59,11 @@ const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
           </Text>
         ))}
         <Text style={styles.sectionTitle}>Instructions</Text>
-        {/* {recipe.instructions.map(instruction => (
-          <Text key={instruction.step} style={styles.listItem}>
-            {instruction.step}. {instruction.description}
+        <TouchableOpacity onPress={openUrl}>
+          <Text style={styles.button}>
+            View instructions
           </Text>
-        ))} */}
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
