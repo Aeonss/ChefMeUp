@@ -100,5 +100,5 @@ export interface Recipe {
     calories: number,
     numberServings: number,
     ingredients: Ingredient[],
-    instructionsUrl: String
+    instructions: string
 }

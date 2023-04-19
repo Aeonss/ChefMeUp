@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {Text, Image} from 'react-native';
 import RecipeStack from './views/RecipesStack';
 import GroceriesStack from './views/GroceriesStack';
+import SettingsView from './views/SettingsView';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -63,7 +64,7 @@ const App = () => {
 
         <Tab.Screen
           name="Third"
-          component={ThirdStack}
+          component={SettingsView}
           options={{
             tabBarLabel: 'Settings',
             tabBarIcon: ({color, focused}) => (

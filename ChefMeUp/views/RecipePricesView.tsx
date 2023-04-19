@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,33 +12,60 @@ import {
 import {Recipe} from '../model/Recipe';
 import {RecipePricesViewProps} from './RecipeStackParams';
 import {GroceryStore} from '../model/GroceryStore';
+import {ActivityIndicator} from 'react-native-paper';
+import Network from '../network/network';
+import {PurchaseOption} from '../model/PurchaseOption';
 
 // Usable stuff
 // Grocery store has name, logoUrl, distance, address
 // Recipe has 'ingredients' which is Ingredient[]
 // Ingredient has name, amount, imageUrl, and unit
 
-const RecipePricesView = ({route, navigation}: RecipeGroceriesViewProps) => {
-    const {recipe} = route.params;
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+const PurchaseOptionCell = (option: PurchaseOption) => {
   return (
+    <View style={styles.purchaseOptionCell}>
+      <Text>{option.storeId}</Text>
+      <Text>{formatter.format(option.price)}</Text>
+    </View>
+  );
+};
 
+const RecipePricesView = ({route, navigation}: RecipePricesViewProps) => {
+  const {recipe} = route.params;
+  const [isLoading, setIsLoading] = useState(true);
+  const [prices, setPrices] = useState<PurchaseOption[]>([]);
+  const [performedFetch, setPerformedFetch] = useState(false);
+  useEffect(() => {
+    if (performedFetch) {
+      return;
+    }
+    setPerformedFetch(true);
+    Network.fetchPrice(recipe)
+      .then(prices => {
+        setPrices(prices);
+        setIsLoading(false);
+      })
+      .catch(e => {
+        console.log(`Error fetching prices: ${e}`);
+      });
+  });
+  return (
     <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>{recipe.name}</Text>
-        <ScrollView style={styles.scrollView}>
-          <Image source={{uri: recipe.imageUrl}} style={styles.image} />
-          <View style={styles.infoContainer}>
-                          <Text style={styles.info}>Grocery Stores Near You</Text>
-                       </View>
-
-        </ScrollView>
-
-        <ScrollView style={styles.scrollView}>
-
-
-        </ScrollView>
+      <Text style={styles.title}>{recipe.name}</Text>
+      <ScrollView style={styles.scrollView}>
+        <Image source={{uri: recipe.imageUrl}} style={styles.image} />
+        <View style={styles.infoContainer}>
+          <Text style={styles.info}>Grocery Stores Near You</Text>
+        </View>
+        {isLoading && <ActivityIndicator style={styles.loader} />}
+        {prices.map(price => PurchaseOptionCell(price))}
+      </ScrollView>
     </SafeAreaView>
-
-
   );
 };
 
@@ -83,6 +110,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'gray',
     borderBottomWidth: 1,
     paddingBottom: 4,
+    marginBottom: 16
   },
   scrollView: {
     margin: 10,
@@ -96,6 +124,15 @@ const styles = StyleSheet.create({
   listItem: {
     fontSize: 16,
     marginBottom: 5,
+  },
+  loader: {
+    margin: 32,
+  },
+  purchaseOptionCell: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginVertical: 8,
   },
 });
 

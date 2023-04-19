@@ -143,11 +143,15 @@ def get_recipe():
         
         # Find closest store ids
         locations = client.get_locations(zipcode, within_miles=10, limit=stores)
-        location_ids = []
+        stores = []
         for location in locations:
-            location_ids.append(location.get("id"))
+            store = {}
+            store['id'] = location.get("id")
+            store['name'] = location.get("name")
+            store['logoUrl'] = location.get("logoUrl")
+            stores.append(store)
         
-        data['totalCost'] = calculateCost(data['ingredients'], client, location_ids, True)
+        data['totalCost'] = calculateCost(data['ingredients'], client, stores, True)
         
     else:
         data['totalCost'] = ""
@@ -179,7 +183,7 @@ def calculateCost(recipe, client, location_ids, isRecipe):
             # ~ 16 seconds for 2 stores and 11 ingredients (22 searches)
             # ~ 21 seconds for 3 stores and 6 ingredients (18 searches)
             # ~ 35 seconds for 5 stores and 11 ingredients (55 searches)
-            products = client.search_products(term=name, limit=5, location_id=location_id)
+            products = client.search_products(term=name, limit=5, location_id=location_id.get("id"))
             
             # Need to compare amount and unit
             # For now it gets the first grocery price
@@ -190,7 +194,7 @@ def calculateCost(recipe, client, location_ids, isRecipe):
             # Get first product item price (future: need to find product that fits amount needed)
             price += products[0]['price']
         
-        data['storeId'] = location_id
+        data['store'] = location_id
         data['price'] = round(price, 2)
         
         prices.append(data)
@@ -257,11 +261,15 @@ def get_price():
         stores = 2
         
     locations = client.get_locations(zipcode, within_miles=10, limit=stores)
-    location_ids = []
+    stores = []
     for location in locations:
-        location_ids.append(location.get("id"))
+        store = {}
+        store['id'] = location.get("id")
+        store['name'] = location.get("name")
+        store['logoUrl'] = location.get("logoUrl")
+        stores.append(store)
 
-    prices = calculateCost(ingredients, client, location_ids, False)
+    prices = calculateCost(ingredients, client, stores, False)
 
     return jsonify(prices)
     

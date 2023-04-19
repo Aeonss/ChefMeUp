@@ -9,6 +9,6 @@ export type RecipeStackParam = {
 
 export type RecipesViewProps = NativeStackScreenProps<RecipeStackParam, 'RecipesView'>;
 export type RecipesDetailViewProps = NativeStackScreenProps<RecipeStackParam, 'RecipeDetailView'>;
-export type RecipesPricesViewProps = NativeStackScreenProps<RecipeStackParam, 'RecipePricesView'>;
+export type RecipePricesViewProps = NativeStackScreenProps<RecipeStackParam, 'RecipePricesView'>;
 
 
