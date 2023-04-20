@@ -55,7 +55,7 @@ const SettingsView = () => {
           onChangeText={setZipcode}
           value={zipcode}
           placeholder="12345"
-          placeholderTextColor="#555"
+          placeholderTextColor="#8f8c8c"
           style={styles.searchInput}
           returnKeyType="search"
           keyboardType="number-pad"
