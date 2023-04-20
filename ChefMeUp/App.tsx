@@ -11,7 +11,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 
 const ThirdStack = () => (
-    <Text>Hello</Text>
+    <Text>Check</Text>
 );
 const ThirdScreen = () => (
   <Text style={{textAlign: 'center'}}>Third Screen</Text>
