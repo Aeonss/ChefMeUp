@@ -81,7 +81,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
     if (filter == 'vegetarian') {
       console.log('vegetarian');
       const vegetarian_recipes = [];
-      for (const recipe of recipes) {
+      for (const recipe of originalResults) {
         console.log(recipe.healthLabels);
         if(recipe.healthLabels.includes("Vegetarian")){
             vegetarian_recipes.push(recipe);
@@ -89,10 +89,32 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       }
       setRecipes([...vegetarian_recipes]); // update
     }
+    else if (filter == 'vegan') {
+      console.log('vegan');
+      const vegan_recipes = [];
+      for (const recipe of originalResults) {
+        console.log(recipe.healthLabels);
+        if(recipe.healthLabels.includes("Vegan")){
+            vegan_recipes.push(recipe);
+        }
+      }
+      setRecipes([...vegan_recipes]); // update
+    }
+    else if (filter == 'tree-nut-free') {
+      console.log('tree-nut-free');
+      const tree_nut_free_recipes = [];
+      for (const recipe of originalResults) {
+        console.log(recipe.healthLabels);
+        if(recipe.healthLabels.includes("Tree-Nut-Free")){
+            tree_nut_free_recipes.push(recipe);
+        }
+      }
+      setRecipes([...tree_nut_free_recipes]); // update
+    }
     else if (filter == 'peanut-free') {
       console.log('peanut-free');
       const peanut_free_recipes = [];
-      for (const recipe of recipes) {
+      for (const recipe of originalResults) {
         if(recipe.healthLabels.includes("Peanut-Free")){
             peanut_free_recipes.push(recipe);
         }
@@ -100,7 +122,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       setRecipes([...peanut_free_recipes]); // update
     }
     else {
-        console.log('relevance');
+        console.log('all-results');
         setRecipes([...originalResults]);
     }
     /*if (filter == 'time') {
@@ -160,16 +182,18 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       {recipes.length > 0 && (
         <View style={styles.view}>
           <View>
-            <Text style={styles.sortLabel}>Filter By:</Text>
+            <Text style={styles.sortLabel}>Filter:</Text>
             <Picker
               selectedValue={selectedFilter}
               onValueChange={(itemValue, itemIndex) => {
                 setSelectedFilter(itemValue);
                 sortResults(itemValue === undefined ? "" : itemValue);
               }}>
-              <Picker.Item label="Relevance" value="relevance" />
+              <Picker.Item label="All Results" value="all-results" />
               <Picker.Item label="Vegetarian" value="vegetarian" />
+              <Picker.Item label="Vegan" value="vegan" />
               <Picker.Item label="Peanut-Free" value="peanut-free" />
+              <Picker.Item label="Tree-Nut-Free" value="tree-nut-free" />
             </Picker>
           </View>
           <FlatList
