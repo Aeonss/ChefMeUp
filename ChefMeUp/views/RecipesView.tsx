@@ -70,22 +70,41 @@ const SearchBox = (
 const RecipesView = ({route, navigation}: RecipesViewProps) => {
   const [search, setSearch] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [originalResults, setOriginalResults] = useState<Recipe[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [message, setMessage] = useState('Search for a recipe to get started!');
   const updateSearch = (text: string): void => {
     setSearch(text);
   };
   const [selectedFilter, setSelectedFilter] = useState();
-  const dropDownData = [
-    {value: 'Option 1'},
-    {value: 'Option 2'},
-    {value: 'Option 3'},
-    // Add more options as needed
-  ];
   const sortResults = (filter: string) => {
-    if (filter == 'time') {
+    if (filter == 'vegetarian') {
+      console.log('vegetarian');
+      const vegetarian_recipes = [];
+      for (const recipe of recipes) {
+        console.log(recipe.healthLabels);
+        if(recipe.healthLabels.includes("Vegetarian")){
+            vegetarian_recipes.push(recipe);
+        }
+      }
+      setRecipes([...vegetarian_recipes]); // update
+    }
+    else if (filter == 'peanut-free') {
+      console.log('peanut-free');
+      const peanut_free_recipes = [];
+      for (const recipe of recipes) {
+        if(recipe.healthLabels.includes("Peanut-Free")){
+            peanut_free_recipes.push(recipe);
+        }
+      }
+      setRecipes([...peanut_free_recipes]); // update
+    }
+    else {
+        console.log('relevance');
+        setRecipes([...originalResults]);
+    }
+    /*if (filter == 'time') {
       console.log('time');
-      console.log('price');
       recipes.sort((obj1, obj2) => {
         return obj1.totalMinutes - obj2.totalMinutes;
       });
@@ -100,15 +119,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       setRecipes([...recipes]); // update
     } else {
       console.log('relevance');
-    }
-  };
-  const sortListASC = () => {};
-
-  const sortListDES = () => {
-    recipes.sort((obj1, obj2) => {
-      return obj2.id - obj1.id;
-    });
-    setRecipes([...recipes]);
+    }*/
   };
   function getOnClick(recipe: Recipe) {
     return () => {
@@ -129,6 +140,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       .then(fetched => {
         setIsSearching(false);
         setRecipes(fetched);
+        setOriginalResults(fetched);
         if (fetched.length == 0) {
           setMessage(
             'Could not find any recipes. Please try searching using a different query.',
@@ -148,7 +160,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       {recipes.length > 0 && (
         <View style={styles.view}>
           <View>
-            <Text style={styles.sortLabel}>Sort By:</Text>
+            <Text style={styles.sortLabel}>Filter By:</Text>
             <Picker
               selectedValue={selectedFilter}
               onValueChange={(itemValue, itemIndex) => {
@@ -156,8 +168,8 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
                 sortResults(itemValue === undefined ? "" : itemValue);
               }}>
               <Picker.Item label="Relevance" value="relevance" />
-              <Picker.Item label="Time" value="time" />
-              <Picker.Item label="Price" value="price" />
+              <Picker.Item label="Vegetarian" value="vegetarian" />
+              <Picker.Item label="Peanut-Free" value="peanut-free" />
             </Picker>
           </View>
           <FlatList
