@@ -68,20 +68,28 @@ Required: id, zipcode
 * Recipe lookup using the ID, and returns the json object recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
 * By default, the number of stores is 2, but you can change the limit with &stores=N
     * Estimated cost of the recipe will give N json objects with:
-        * storeId
         * price
+        * id
+        * name
+        * address
+        * logoUrl
+        * distance
 
 
 ```bash
-/price?item=ITEM&item=ITEM&item=ITEM&zipcode=ZIPCODE&stores=5
+/price?item=ITEM&item=ITEM&item=ITEM&zipcode=ZIPCODE&stores=5&lon=LON&lat=LAT
 
 Required: item, zipcode
 ```
 * Looks up the estimate price for a list of items
 * By default, the amount of stores is 2
     * Estimate cost of the list of items will give N json objects with:
-        * storeId
         * price
+        * id
+        * name
+        * address
+        * logoUrl
+        * distance
 
 
 ```bash  

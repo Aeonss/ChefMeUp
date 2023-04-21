@@ -99,6 +99,8 @@ def get_recipe():
     recipe_id = request.args.get('id')
     zipcode = request.args.get('zipcode')
     stores = request.args.get('stores')
+    lon = request.args.get('lon')
+    lat = request.args.get('lat')
     
     randnum = random.randint(0, 4)
     url = f"https://api.edamam.com/api/recipes/v2/{recipe_id}?type=public&app_id={api_id[randnum]}&app_key={app_key[randnum]}&random=true"
@@ -148,7 +150,27 @@ def get_recipe():
             store = {}
             store['id'] = location.get("id")
             store['name'] = location.get("name")
+            store['address'] = location.get("address")
             store['logoUrl'] = location.get("logoUrl")
+            
+            if lon and lat != None:
+            
+                try:
+                    parsed_address = location.get("address").replace(" ", "+")
+                    r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
+
+                    data = json.loads(r.content)
+                    store_lat = data[0]["lat"]
+                    store_lon = data[0]["lon"]
+
+                    r2 = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon},{lat};{store_lon},{store_lat}?overview=false")
+                    route = json.loads(r2.content).get("routes")[0]
+                    distance = route.get("legs")[0]['distance'] / 1609
+                    store['distance'] = distance
+                except:
+                    pass
+            
+            
             stores.append(store)
         
         data['totalCost'] = calculateCost(data['ingredients'], client, stores, True)
@@ -252,6 +274,8 @@ def get_price():
     ingredients = request.args.getlist('item')
     zipcode = request.args.get('zipcode')
     stores = request.args.get('stores')
+    lon = request.args.get('lon')
+    lat = request.args.get('lat')
     
     # Kroger
     randnum = random.randint(0, 4)
@@ -266,10 +290,33 @@ def get_price():
         store = {}
         store['id'] = location.get("id")
         store['name'] = location.get("name")
+        store['address'] = location.get("address")
         store['logoUrl'] = location.get("logoUrl")
+        store['distance'] = ""
+        
+        if lon and lat != None:
+            
+            try:
+                parsed_address = location.get("address").replace(" ", "+")
+                r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
+
+                data = json.loads(r.content)
+                store_lat = data[0]["lat"]
+                store_lon = data[0]["lon"]
+
+                r2 = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon},{lat};{store_lon},{store_lat}?overview=false")
+                route = json.loads(r2.content).get("routes")[0]
+                distance = route.get("legs")[0]['distance'] / 1609
+                store['distance'] = distance
+            except:
+                pass
+        
         stores.append(store)
 
     prices = calculateCost(ingredients, client, stores, False)
+    
+
+        
 
     return jsonify(prices)
     
@@ -278,37 +325,43 @@ def get_price():
 # Gets the distance in miles between 2 coordinates
 @app.route("/distance", methods=['GET'])
 def calc_distance():
-    lon1 = request.args.get('lon1')
-    lat1 = request.args.get('lat1')
-    
-    lon2 = request.args.get('lon2')
-    lat2 = request.args.get('lat2')
-    
-    r = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon1},{lat1};{lon2},{lat2}?overview=false")
+    try:
+        lon1 = request.args.get('lon1')
+        lat1 = request.args.get('lat1')
+        
+        lon2 = request.args.get('lon2')
+        lat2 = request.args.get('lat2')
+        
+        r = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon1},{lat1};{lon2},{lat2}?overview=false")
 
-    route = json.loads(r.content).get("routes")[0]
+        route = json.loads(r.content).get("routes")[0]
 
-    # Convert feet to miles
-    distance = route.get("legs")[0]['distance'] / 1609
-    
-    return str(round(distance, 2))
+        # Convert feet to miles
+        distance = route.get("legs")[0]['distance'] / 1609
+        
+        return str(round(distance, 2))
+    except:
+        return ""
 
 
 # Gets the latitude and longitude coordinates of an address
 @app.route("/address2coord", methods=['GET'])
 def addressToCoord():
-    address = request.args.get('address')
-    
-    parsed_address = address.replace(" ", "+")
+    try:
+        address = request.args.get('address')
+        
+        parsed_address = address.replace(" ", "+")
 
-    r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
-    data = json.loads(r.content)
-    
-    json_data = {}
-    json_data['lat'] = data[0]["lat"]
-    json_data['lon'] = data[0]["lon"]
-    
-    return jsonify(json_data)
+        r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
+        data = json.loads(r.content)
+        
+        json_data = {}
+        json_data['lat'] = data[0]["lat"]
+        json_data['lon'] = data[0]["lon"]
+        
+        return jsonify(json_data)
+    except:
+        return ""
 
 
 if __name__ == "__main__":
