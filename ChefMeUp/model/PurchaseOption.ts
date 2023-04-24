@@ -1,4 +1,6 @@
+import { GroceryStore } from "./GroceryStore";
+
 export interface PurchaseOption {
     price: number,
-    storeId: string
+    store: GroceryStore
 }

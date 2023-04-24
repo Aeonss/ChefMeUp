@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 // import { SortBy } from 'react-instantsearch-dom';
 import {
   Button,
@@ -12,14 +12,19 @@ import {
   TextInput,
   Keyboard,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-// import { Dropdown } from 'react-native-material-dropdown';
-import {Recipe} from '../model/Recipe';
-import sampleRecipes from '../model/sampleRecipes';
+import Modal from 'react-native-modal';
+import {
+  Recipe,
+  allCuisines,
+  allDietLabels,
+  allHealthLabels,
+} from '../model/Recipe';
 import {useState} from 'react';
 import {RecipesViewProps} from './RecipeStackParams';
 import Network from '../network/network';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -34,9 +39,8 @@ const RecipeCard = (recipe: Recipe, onClick: () => void) => (
         style={styles.recipeImage}>
         <View style={styles.recipeInfo}>
           <Text style={styles.recipeName}>{recipe.name}</Text>
-          <Text style={styles.recipeDetails}>
-            {recipe.totalMinutes} min •
-            {formatter.format(recipe.totalCost / recipe.numberServings)}/serving
+          <Text style={styles.cuisineType}>
+            {recipe.cuisineType} • {recipe.dietLabels.join(', ')}
           </Text>
         </View>
       </ImageBackground>
@@ -72,44 +76,34 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [message, setMessage] = useState('Search for a recipe to get started!');
+  const [selectedCuisine, setSelectedCuisine] = useState('');
+  const [selectedDietLabels, setSelectedDietLabels] = useState<string[]>([]);
+  const [selectedHealthLabels, setSelectedHealthLabels] = useState<string[]>(
+    [],
+  );
+  const [modalOpen, setModalOpen] = useState(false);
+  const dropdownRef = useRef<SelectDropdown>(null);
   const updateSearch = (text: string): void => {
     setSearch(text);
   };
-  const [selectedFilter, setSelectedFilter] = useState();
-  const dropDownData = [
-    {value: 'Option 1'},
-    {value: 'Option 2'},
-    {value: 'Option 3'},
-    // Add more options as needed
-  ];
-  const sortResults = (filter: string) => {
-    if (filter == 'time') {
-      console.log('time');
-      console.log('price');
-      recipes.sort((obj1, obj2) => {
-        return obj1.totalMinutes - obj2.totalMinutes;
-      });
-
-      setRecipes([...recipes]); // update
-    } else if (filter == 'price') {
-      console.log('price');
-      recipes.sort((obj1, obj2) => {
-        return obj1.totalCost - obj2.totalCost;
-      });
-
-      setRecipes([...recipes]); // update
-    } else {
-      console.log('relevance');
-    }
+  const openFilters = () => {
+    setModalOpen(true);
   };
-  const sortListASC = () => {};
-
-  const sortListDES = () => {
-    recipes.sort((obj1, obj2) => {
-      return obj2.id - obj1.id;
+  const closeFilters = () => {
+    setModalOpen(false);
+  };
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={openFilters}>
+          <Image
+            source={require('../assets/bxs-filter.png')}
+            style={styles.filterIcon}
+          />
+        </TouchableOpacity>
+      ),
     });
-    setRecipes([...recipes]);
-  };
+  }, [navigation]);
   function getOnClick(recipe: Recipe) {
     return () => {
       navigation.navigate('RecipeDetailView', {recipe: recipe});
@@ -125,7 +119,12 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
     setIsSearching(true);
     setRecipes([]);
     setMessage('');
-    Network.fetchRecipes(search)
+    Network.fetchRecipes(
+      search,
+      selectedCuisine,
+      selectedDietLabels,
+      selectedHealthLabels,
+    )
       .then(fetched => {
         setIsSearching(false);
         setRecipes(fetched);
@@ -140,6 +139,97 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
         setMessage(`There was an error when searching for recipes: ${error}`);
       });
   }
+  const cuisineFilter = (
+    <SelectDropdown
+      data={allCuisines}
+      ref={dropdownRef}
+      defaultButtonText={
+        selectedCuisine.length == 0 ? 'Select...' : selectedCuisine
+      }
+      onSelect={(item, index) => {
+        if (selectedCuisine == item) {
+          setSelectedCuisine('');
+          dropdownRef.current?.reset();
+        } else {
+          setSelectedCuisine(item);
+        }
+      }}
+      buttonStyle={styles.buttonStyle}
+      buttonTextStyle={styles.buttonTextStyle}
+      buttonTextAfterSelection={(item, index) => {
+        return selectedCuisine.length == 0 ? 'Select...' : selectedCuisine;
+      }}
+    />
+  );
+  const dietFilter = (
+    <SelectDropdown
+      data={allDietLabels}
+      ref={dropdownRef}
+      defaultButtonText={
+        selectedDietLabels.length == 0
+          ? 'Select...'
+          : selectedDietLabels.join(', ')
+      }
+      onSelect={(item, index) => {
+        const newlabels = selectedDietLabels.filter(a => a != item);
+        if (newlabels.length == selectedDietLabels.length) {
+          newlabels.push(item);
+        }
+        setSelectedDietLabels(newlabels);
+      }}
+      buttonStyle={styles.buttonStyle}
+      buttonTextStyle={styles.buttonTextStyle}
+      buttonTextAfterSelection={(item, index) => {
+        return selectedDietLabels.length == 0
+          ? 'Select...'
+          : selectedDietLabels.join(', ');
+      }}
+    />
+  );
+  const healthFilter = (
+    <SelectDropdown
+      data={allHealthLabels}
+      ref={dropdownRef}
+      defaultButtonText={
+        selectedHealthLabels.length == 0
+          ? 'Select...'
+          : selectedHealthLabels.join(', ')
+      }
+      onSelect={(item, index) => {
+        const newlabels = selectedHealthLabels.filter(a => a != item);
+        if (newlabels.length == selectedHealthLabels.length) {
+          newlabels.push(item);
+        }
+        setSelectedHealthLabels(newlabels);
+      }}
+      buttonStyle={styles.buttonStyle}
+      buttonTextStyle={styles.buttonTextStyle}
+      buttonTextAfterSelection={(item, index) => {
+        return selectedHealthLabels.length == 0
+          ? 'Select...'
+          : selectedHealthLabels.join(', ');
+      }}
+    />
+  );
+  const modal = (
+    <Modal isVisible={modalOpen}>
+      <View style={styles.filterContainer}>
+        <View style={styles.filterHeaderContainer}>
+          <Text style={styles.filterCloseButton2}>X</Text>
+          <Text style={styles.filterHeader}>Filters</Text>
+          <TouchableOpacity onPress={closeFilters}>
+            <Text style={styles.filterCloseButton}>X</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.filterSubheader}>Cuisine:</Text>
+        {cuisineFilter}
+        <Text style={styles.filterSubheader}>Dietary Restrictions:</Text>
+        {dietFilter}
+        <Text style={styles.filterSubheader}>Health Restrictions:</Text>
+        {healthFilter}
+      </View>
+    </Modal>
+  );
   return (
     <View style={styles.view}>
       {SearchBox(updateSearch, search, performSearch)}
@@ -147,19 +237,6 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       {message.length > 0 && <Text style={styles.message}>{message}</Text>}
       {recipes.length > 0 && (
         <View style={styles.view}>
-          <View>
-            <Text style={styles.sortLabel}>Sort By:</Text>
-            <Picker
-              selectedValue={selectedFilter}
-              onValueChange={(itemValue, itemIndex) => {
-                setSelectedFilter(itemValue);
-                sortResults(itemValue === undefined ? "" : itemValue);
-              }}>
-              <Picker.Item label="Relevance" value="relevance" />
-              <Picker.Item label="Time" value="time" />
-              <Picker.Item label="Price" value="price" />
-            </Picker>
-          </View>
           <FlatList
             data={recipes}
             renderItem={({item}) => RecipeCard(item, getOnClick(item))}
@@ -167,6 +244,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
           />
         </View>
       )}
+      {modal}
     </View>
   );
 };
@@ -184,7 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   recipeInfo: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     paddingVertical: 8,
     paddingHorizontal: 16,
     paddingBottom: 16,
@@ -193,6 +271,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
+    marginBottom: 5,
   },
   recipeDetails: {
     fontSize: 14,
@@ -239,6 +318,76 @@ const styles = StyleSheet.create({
   },
   view: {
     height: '100%',
+  },
+  cuisineType: {
+    marginRight: 16,
+    color: 'white',
+    fontWeight: '600',
+    textTransform: 'capitalize',
+  },
+  buttonStyle: {
+    width: '100%',
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderRadius: 8,
+    fontSize: 12,
+    maxHeight: 30,
+    marginBottom: 8,
+    backgroundColor: 'white',
+  },
+  buttonTextStyle: {
+    fontSize: 12,
+  },
+  rowStyle: {},
+  rowTextStyle: {},
+  selectedRowTextStyle: {
+    color: 'red',
+  },
+  filterHeader: {
+    fontWeight: '700',
+    fontSize: 24,
+    textAlign: 'center',
+    marginLeft: 32,
+  },
+  filterSubheader: {
+    marginHorizontal: 16,
+    marginBottom: 4,
+    marginTop: 8,
+  },
+  filterContainer: {
+    marginRight: 0,
+    paddingRight: 32,
+    backgroundColor: '#fff',
+    paddingTop: 40,
+    borderRadius: 32,
+    shadowRadius: 40,
+    shadowColor: 'black',
+    shadowOpacity: 0.7,
+    shadowOffset: {width: 0, height: 40},
+  },
+  filterHeaderContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    marginLeft: 24,
+  },
+  filterCloseButton: {
+    color: '#000',
+    fontWeight: '700',
+    fontSize: 24,
+  },
+  filterCloseButton2: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 24,
+  },
+  filterIcon: {
+    tintColor: '#000',
+    width: 32,
+    height: 32,
+    marginRight: 16,
   },
 });
 

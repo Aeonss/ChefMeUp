@@ -28,8 +28,10 @@ const formatter = new Intl.NumberFormat('en-US', {
 
 const PurchaseOptionCell = (option: PurchaseOption) => {
   return (
-    <View style={styles.purchaseOptionCell}>
-      <Text>{option.storeId}</Text>
+    <View style={styles.purchaseOptionCell} key={option.store.id}>
+      <Image style={styles.storeImage} source={{uri: option.store.logoUrl}} />
+      <Text>{option.store.name}</Text>
+      <View style={styles.spacer}></View>
       <Text>{formatter.format(option.price)}</Text>
     </View>
   );
@@ -110,7 +112,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'gray',
     borderBottomWidth: 1,
     paddingBottom: 4,
-    marginBottom: 16
+    marginBottom: 16,
   },
   scrollView: {
     margin: 10,
@@ -133,6 +135,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     marginVertical: 8,
+    alignItems: 'center'
+  },
+  storeImage: {
+    height: 50,
+    width: 50,
+    marginRight: 8
+  },
+  spacer: {
+    flex: 1,
   },
 });
 
