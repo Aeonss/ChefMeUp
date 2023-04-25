@@ -1,5 +1,5 @@
 // RecipeDetailView.tsx
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {
   View,
@@ -11,15 +11,36 @@ import {
   Linking,
   TouchableOpacity,
 } from 'react-native';
+import RNViewShot from 'react-native-view-shot';
 
-import {Recipe} from '../model/Recipe';
 import {RecipesDetailViewProps} from './RecipeStackParams';
 
-type RecipeDetailViewProps = {
-  recipe: Recipe;
+const labelView = (labels: string[]) => {
+  return (
+    <ScrollView
+      style={styles.labelContainer}
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}>
+      {labels.map(label => {
+        return <Text style={styles.label}>{label}</Text>;
+      })}
+    </ScrollView>
+  );
 };
 
 const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
+//   const [takenScreenshot, setTakenScreenshot] = useState(false);
+  const ref = useRef<RNViewShot>(null);
+//   useEffect(() => {
+//     if (takenScreenshot) return;
+//     setTakenScreenshot(true);
+//     setTimeout(() => {
+//       if (ref.current?.capture) ref.current?.capture();
+//     }, 5000);
+//   });
+  const onCapture = useCallback((uri: string) => {
+    console.log('do something with ', uri);
+  }, []);
   navigation.setOptions({
     headerTitleStyle: {
       fontFamily: 'Poppins',
@@ -60,69 +81,84 @@ const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>{recipe.name}</Text>
-        <Text style={styles.subtitle}>{headerInfo.join(' • ')}</Text>
-        <Image source={{uri: recipe.imageUrl}} style={styles.image} />
-        <Text style={styles.sectionTitle}>Info</Text>
-        <View style={styles.infoContainer}>
-          <Text style={styles.info}>Total Time:</Text>
-          <Text style={styles.info}>{recipe.totalMinutes} minutes</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.info}>Quantity:</Text>
-          <Text style={styles.info}>{recipe.numberServings} servings</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.info}>Nutrition:</Text>
-          <Text style={styles.info}>
-            {Math.round(recipe.calories)} calories
-          </Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.info}>Instructions:</Text>
-          <TouchableOpacity onPress={openUrl} style={styles.linkContainer}>
-            <Text style={styles.link}>View instructions</Text>
-            <Image
-              source={require('../assets/bxs-link.png')}
-              style={styles.linkImage}
-            />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sectionTitle}>Ingredients</Text>
-        <Text style={styles.sectionSubtitle}>
-          Select the ingredients that you would need to purchase.
-        </Text>
-        {recipe.ingredients.map((ingredient, index) => (
-          <TouchableOpacity key={index} onPress={() => toggleIngredient(index)}>
-            <View style={styles.ingredientContainer}>
-              <View style={styles.checkboxContainer}>
-                {checkedIngredients[index] && <View style={styles.checkbox} />}
-              </View>
-              <Text style={styles.ingredientText}>
-                {Math.round(ingredient.amount * 100) / 100} {ingredient.unit}{' '}
-                {ingredient.name}
-              </Text>
+        <RNViewShot
+          onCapture={onCapture}
+          ref={ref}
+          style={{backgroundColor: 'white', paddingHorizontal: 8}}>
+          <Text style={styles.title}>{recipe.name}</Text>
+          <Text style={styles.subtitle}>{headerInfo.join(' • ')}</Text>
+          <Image source={{uri: recipe.imageUrl}} style={styles.image} />
+          <Text style={styles.sectionTitle}>Info</Text>
+          {recipe.totalMinutes > 0 && (
+            <View style={styles.infoContainer}>
+              <Text style={styles.info}>Total Time:</Text>
+              <Text style={styles.info}>{recipe.totalMinutes} minutes</Text>
             </View>
-          </TouchableOpacity>
-        ))}
-        <TouchableOpacity
-          onPress={() => {
-            const selectedIngredients = recipe.ingredients.filter(
-              (ing, idx) => checkedIngredients[idx],
-            );
-            navigation.navigate('RecipePricesView', {
-              recipe: recipe,
-              selectedIngredients: selectedIngredients,
-            });
-          }}
-          disabled={checkedIngredients.filter(a => a).length == 0}
-          style={{
-            opacity: checkedIngredients.filter(a => a).length == 0 ? 0.4 : 1,
-          }}>
-          <Text style={styles.button}>
-            Check prices at your local grocery store
+          )}
+          <View style={styles.infoContainer}>
+            <Text style={styles.info}>Quantity:</Text>
+            <Text style={styles.info}>{recipe.numberServings} servings</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.info}>Nutrition:</Text>
+            <Text style={styles.info}>
+              {Math.round(recipe.calories)} calories
+            </Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.info}>Instructions:</Text>
+            <TouchableOpacity onPress={openUrl} style={styles.linkContainer}>
+              <Text style={styles.link}>View instructions</Text>
+              <Image
+                source={require('../assets/bxs-link.png')}
+                style={styles.linkImage}
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.sectionTitle}>Diet Labels</Text>
+          {labelView(recipe.dietLabels)}
+          <Text style={styles.sectionTitle}>Health Labels</Text>
+          {labelView(recipe.healthLabels)}
+          <Text style={styles.sectionTitle}>Ingredients</Text>
+          <Text style={styles.sectionSubtitle}>
+            Select the ingredients that you would need to purchase.
           </Text>
-        </TouchableOpacity>
+          {recipe.ingredients.map((ingredient, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => toggleIngredient(index)}>
+              <View style={styles.ingredientContainer}>
+                <View style={styles.checkboxContainer}>
+                  {checkedIngredients[index] && (
+                    <View style={styles.checkbox} />
+                  )}
+                </View>
+                <Text style={styles.ingredientText}>
+                  {Math.round(ingredient.amount * 100) / 100} {ingredient.unit}{' '}
+                  {ingredient.name}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity
+            onPress={() => {
+              const selectedIngredients = recipe.ingredients.filter(
+                (ing, idx) => checkedIngredients[idx],
+              );
+              navigation.navigate('RecipePricesView', {
+                recipe: recipe,
+                selectedIngredients: selectedIngredients,
+              });
+            }}
+            disabled={checkedIngredients.filter(a => a).length == 0}
+            style={{
+              opacity: checkedIngredients.filter(a => a).length == 0 ? 0.4 : 1,
+            }}>
+            <Text style={styles.button}>
+              Check prices at your local grocery store
+            </Text>
+          </TouchableOpacity>
+        </RNViewShot>
       </ScrollView>
     </SafeAreaView>
   );
@@ -187,7 +223,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   scrollView: {
-    marginHorizontal: 8,
+    marginHorizontal: 0,
   },
   sectionTitle: {
     fontSize: 20,
@@ -246,6 +282,17 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     tintColor: '#5dbb63',
   },
+  label: {
+    backgroundColor: 'rgba(93, 187, 99, 0.4)',
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    fontFamily: 'Poppins',
+    verticalAlign: 'middle',
+    borderRadius: 4,
+    marginRight: 12,
+    overflow: 'hidden',
+  },
+  labelContainer: {},
 });
 
 export default RecipeDetailView;
