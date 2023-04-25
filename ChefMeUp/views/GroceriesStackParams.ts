@@ -5,5 +5,5 @@ export type GroceriesStackParam = {
   RecipeGroceriesView: undefined;
 };
 
-export type RecipesGroceriesViewProps = NativeStackScreenProps<RecipeStackParam, 'RecipeGroceriesView'>;
+export type RecipesGroceriesViewProps = NativeStackScreenProps<GroceriesStackParam, 'RecipeGroceriesView'>;
 

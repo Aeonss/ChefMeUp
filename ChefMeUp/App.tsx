@@ -5,25 +5,38 @@ import {Image} from 'react-native';
 import RecipeStack from './views/RecipesStack';
 import GroceriesStack from './views/GroceriesStack';
 import SettingsView from './views/SettingsView';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const Tab = createMaterialBottomTabNavigator();
+// const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="First"
-        shifting={false}
-        sceneAnimationEnabled={false}
-        activeColor="black"
-        inactiveColor="#888"
-        barStyle={{
-          backgroundColor: 'white',
-        }}
-        theme={{colors:{secondaryContainer: 'transparent'}}}
         screenOptions={{
-          tabBarColor: 'black',
-        }}>
+            headerShown: false,
+            tabBarActiveTintColor: '#5dbb63',
+            tabBarLabelStyle: {
+                fontFamily: 'Poppins',
+                fontWeight: '600'
+            },
+            tabBarInactiveBackgroundColor: 'white'
+        }}
+        // shifting={false}
+        // sceneAnimationEnabled={false}
+        // activeColor="black"
+        // inactiveColor="#888"
+        
+        // barStyle={{
+        //   backgroundColor: 'white',
+        // }}
+        // theme={{colors:{secondaryContainer: 'transparent'}}}
+        // screenOptions={{
+        //   tabBarColor: 'black',
+        // }}
+        >
 
         <Tab.Screen
           name="First"

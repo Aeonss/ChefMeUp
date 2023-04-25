@@ -12,7 +12,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Keyboard} from 'react-native';
 
-const SettingsView = () => {
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+
+export type SettingsStackParam = {
+  SettingsView: undefined;
+};
+export type SettingsViewProps = NativeStackScreenProps<
+  SettingsStackParam,
+  'SettingsView'
+>;
+
+const SettingsView = ({route, navigation}: SettingsViewProps) => {
+  navigation.setOptions({
+    headerTitleStyle: {
+      fontFamily: 'Poppins',
+      fontWeight: '400',
+      color: 'black',
+    },
+    headerBackTitle: ' ',
+    headerTintColor: '#5dbb63',
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [zipcode, setZipcode] = useState('');
   const [initialFetch, setInitialFetch] = useState(false);
@@ -78,6 +97,7 @@ const styles = StyleSheet.create({
     margin: 32,
     fontSize: 16,
     textAlign: 'center',
+    fontFamily: 'Poppins',
   },
   searchBar: {
     margin: 16,
@@ -89,6 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     display: 'flex',
     flexDirection: 'row',
+    fontFamily: 'Poppins',
   },
   searchInput: {
     backgroundColor: 'white',
@@ -98,6 +119,7 @@ const styles = StyleSheet.create({
     borderColor: '#5dbb63',
     borderWidth: 2,
     paddingHorizontal: 16,
+    fontFamily: 'Poppins',
   },
   searchIcon: {
     paddingHorizontal: 8,
@@ -112,18 +134,22 @@ const styles = StyleSheet.create({
   sortLabel: {
     margin: 10,
     fontSize: 16,
+    fontFamily: 'Poppins',
   },
   view: {
     height: '100%',
+    backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
   },
 });
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<SettingsStackParam>();
 
 const SettingsViewWrapper = () => {
   return (
     <Stack.Screen
-      name="RecipeGroceriesView"
+      name="SettingsView"
       component={SettingsView}
       options={{title: 'Settings'}}
     />

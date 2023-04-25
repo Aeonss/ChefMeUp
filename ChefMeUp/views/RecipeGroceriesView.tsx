@@ -10,15 +10,24 @@ import {
   TextInput,
   Keyboard,
   ActivityIndicator,
-  } from 'react-native';
+} from 'react-native';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {RecipeGroceriesViewProps} from './GroceriesStackParams';
+import {RecipesGroceriesViewProps} from './GroceriesStackParams';
 
-const RecipeGroceriesView = ({route, navigation}: RecipeGroceriesViewProps) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [ingredient, setIngredient] = useState('');
-    const [initialFetch, setInitialFetch] = useState(false);
+const RecipeGroceriesView = ({route, navigation}: RecipesGroceriesViewProps) => {
+  navigation.setOptions({
+    headerTitleStyle: {
+      fontFamily: 'Poppins',
+      fontWeight: '400',
+      color: 'black',
+    },
+    headerBackTitle: ' ',
+    headerTintColor: '#5dbb63',
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [ingredient, setIngredient] = useState('');
+  const [initialFetch, setInitialFetch] = useState(false);
 
   const saveIngredient = async () => {
     Keyboard.dismiss();
@@ -70,7 +79,7 @@ const RecipeGroceriesView = ({route, navigation}: RecipeGroceriesViewProps) => {
       </View>
       {isLoading && <ActivityIndicator />}
     </View>
-    );
+  );
 };
 
 const styles = StyleSheet.create({
@@ -115,6 +124,9 @@ const styles = StyleSheet.create({
   },
   view: {
     height: '100%',
+    backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderBottomWidth: 1
   },
 });
 
