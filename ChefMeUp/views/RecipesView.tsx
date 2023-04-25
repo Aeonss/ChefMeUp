@@ -243,6 +243,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       {SearchBox(updateSearch, search, performSearch)}
       {isSearching && <ActivityIndicator />}
       {message.length > 0 && <Text style={styles.message}>{message}</Text>}
+      {message.length > 0 && <Image source={require('../assets/cooking.png')} style={styles.cookingImage} />}
       {recipes.length > 0 && (
         <FlatList
           data={recipes}
@@ -405,6 +406,11 @@ const styles = StyleSheet.create({
     height: 32,
     marginRight: 16,
   },
+  cookingImage: {
+    aspectRatio: 954 / 774,
+    width: '100%',
+    height: undefined
+  }
 });
 
 export default RecipesView;
