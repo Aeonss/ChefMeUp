@@ -1,3 +1,4 @@
+import { Ingredient } from '../model/Ingredient';
 import { PurchaseOption } from '../model/PurchaseOption';
 import {Recipe} from '../model/Recipe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -46,4 +47,21 @@ async function fetchPrice(recipe: Recipe) {
   }
 }
 
-export default {fetchRecipes, fetchPrice};
+async function fetchPrices(ingredients: Ingredient[]) {
+    const zipcode = await AsyncStorage.getItem('@ZIPCODE');
+    let query = `${baseURL}/price?zipcode=${zipcode}&stores=3`;
+    ingredients.forEach(ingredient => {
+      query += `&item=${encodeURIComponent(ingredient.name)}`;
+    });
+    console.log(query);
+    const response = await fetch(query);
+    const json = await response.json();
+    if (response.ok) {
+      console.log(json);
+      return json as PurchaseOption[];
+    } else {
+      return Promise.reject('Unable to fetch price');
+    }
+  }
+
+export default {fetchRecipes, fetchPrice, fetchPrices};

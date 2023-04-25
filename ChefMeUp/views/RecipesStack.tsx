@@ -12,7 +12,7 @@ const RecipesViewWrapper = () => {
     <Stack.Screen
       name="RecipesView"
       component={RecipesView}
-      options={{title: 'Saved Recipes'}}
+      options={{title: 'Recipes'}}
     />
   );
 };

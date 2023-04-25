@@ -6,20 +6,11 @@ import {
   ScrollView,
   StyleSheet,
   SafeAreaView,
-  Button,
-  TouchableOpacity,
 } from 'react-native';
-import {Recipe} from '../model/Recipe';
 import {RecipePricesViewProps} from './RecipeStackParams';
-import {GroceryStore} from '../model/GroceryStore';
 import {ActivityIndicator} from 'react-native-paper';
 import Network from '../network/network';
 import {PurchaseOption} from '../model/PurchaseOption';
-
-// Usable stuff
-// Grocery store has name, logoUrl, distance, address
-// Recipe has 'ingredients' which is Ingredient[]
-// Ingredient has name, amount, imageUrl, and unit
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -30,15 +21,18 @@ const PurchaseOptionCell = (option: PurchaseOption) => {
   return (
     <View style={styles.purchaseOptionCell} key={option.store.id}>
       <Image style={styles.storeImage} source={{uri: option.store.logoUrl}} />
-      <Text>{option.store.name}</Text>
+      <View>
+        <Text style={styles.storeName}>{option.store.name}</Text>
+        <Text style={styles.storeAddress}>{option.store.address}</Text>
+      </View>
       <View style={styles.spacer}></View>
-      <Text>{formatter.format(option.price)}</Text>
+      <Text style={styles.storePrice}>{formatter.format(option.price)}</Text>
     </View>
   );
 };
 
 const RecipePricesView = ({route, navigation}: RecipePricesViewProps) => {
-  const {recipe} = route.params;
+  const {recipe, selectedIngredients} = route.params;
   const [isLoading, setIsLoading] = useState(true);
   const [prices, setPrices] = useState<PurchaseOption[]>([]);
   const [performedFetch, setPerformedFetch] = useState(false);
@@ -47,7 +41,7 @@ const RecipePricesView = ({route, navigation}: RecipePricesViewProps) => {
       return;
     }
     setPerformedFetch(true);
-    Network.fetchPrice(recipe)
+    Network.fetchPrices(selectedIngredients)
       .then(prices => {
         setPrices(prices);
         setIsLoading(false);
@@ -81,6 +75,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 10,
+    fontFamily: 'Poppins',
+    marginHorizontal: 16,
   },
   image: {
     height: 200,
@@ -93,17 +89,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     marginTop: 10,
-  },
-  button: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: 'white',
-    backgroundColor: '#5dbb63',
-    marginTop: 15,
-    padding: 12,
-    borderRadius: 22,
-    overflow: 'hidden',
-    textAlign: 'center',
+    fontFamily: 'Poppins-semibold',
   },
   infoContainer: {
     display: 'flex',
@@ -117,16 +103,6 @@ const styles = StyleSheet.create({
   scrollView: {
     margin: 10,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  listItem: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
   loader: {
     margin: 32,
   },
@@ -135,15 +111,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     marginVertical: 8,
-    alignItems: 'center'
+    alignItems: 'center',
+    minWidth: 0,
   },
   storeImage: {
     height: 50,
     width: 50,
-    marginRight: 8
+    marginRight: 8,
   },
   spacer: {
     flex: 1,
+  },
+  storeName: {
+    fontSize: 16,
+    fontFamily: 'Poppins-semibold',
+  },
+  storeAddress: {
+    fontSize: 10,
+    fontFamily: 'Poppins',
+  },
+  storePrice: {
+    fontFamily: 'Poppins-medium',
   },
 });
 

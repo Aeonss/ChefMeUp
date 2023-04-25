@@ -40,7 +40,7 @@ const RecipeCard = (recipe: Recipe, onClick: () => void) => (
         <View style={styles.recipeInfo}>
           <Text style={styles.recipeName}>{recipe.name}</Text>
           <Text style={styles.cuisineType}>
-            {recipe.cuisineType} • {recipe.dietLabels.join(', ')}
+            {recipe.cuisineType}{recipe.dietLabels.length > 0 ? " • " : ""}{recipe.dietLabels.join(', ')}
           </Text>
         </View>
       </ImageBackground>
@@ -102,6 +102,11 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
           />
         </TouchableOpacity>
       ),
+      headerTitleStyle: {
+        fontFamily: 'Poppins',
+        fontWeight: '400',
+      },
+      headerTintColor: '#000',
     });
   }, [navigation]);
   function getOnClick(recipe: Recipe) {
@@ -156,6 +161,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       }}
       buttonStyle={styles.buttonStyle}
       buttonTextStyle={styles.buttonTextStyle}
+      rowTextStyle={styles.rowTextStyle}
       buttonTextAfterSelection={(item, index) => {
         return selectedCuisine.length == 0 ? 'Select...' : selectedCuisine;
       }}
@@ -179,6 +185,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       }}
       buttonStyle={styles.buttonStyle}
       buttonTextStyle={styles.buttonTextStyle}
+      rowTextStyle={styles.rowTextStyle}
       buttonTextAfterSelection={(item, index) => {
         return selectedDietLabels.length == 0
           ? 'Select...'
@@ -204,6 +211,7 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
       }}
       buttonStyle={styles.buttonStyle}
       buttonTextStyle={styles.buttonTextStyle}
+      rowTextStyle={styles.rowTextStyle}
       buttonTextAfterSelection={(item, index) => {
         return selectedHealthLabels.length == 0
           ? 'Select...'
@@ -231,18 +239,16 @@ const RecipesView = ({route, navigation}: RecipesViewProps) => {
     </Modal>
   );
   return (
-    <View style={styles.view}>
+    <View style={styles.outerView}>
       {SearchBox(updateSearch, search, performSearch)}
       {isSearching && <ActivityIndicator />}
       {message.length > 0 && <Text style={styles.message}>{message}</Text>}
       {recipes.length > 0 && (
-        <View style={styles.view}>
-          <FlatList
-            data={recipes}
-            renderItem={({item}) => RecipeCard(item, getOnClick(item))}
-            keyExtractor={item => item.id.toString()}
-          />
-        </View>
+        <FlatList
+          data={recipes}
+          renderItem={({item}) => RecipeCard(item, getOnClick(item))}
+          keyExtractor={item => item.id.toString()}
+        />
       )}
       {modal}
     </View>
@@ -253,34 +259,33 @@ const styles = StyleSheet.create({
   recipeCard: {
     margin: 16,
     marginTop: 0,
-    borderRadius: 10,
+    borderRadius: 20,
     overflow: 'hidden',
+    marginBottom: 24,
   },
   recipeImage: {
     width: '100%',
-    height: 200,
+    height: 250,
     justifyContent: 'flex-end',
   },
   recipeInfo: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingVertical: 8,
+    paddingVertical: 16,
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingBottom: 24,
   },
   recipeName: {
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: 5,
-  },
-  recipeDetails: {
-    fontSize: 14,
-    color: 'white',
+    marginBottom: 3,
+    fontFamily: 'Poppins',
   },
   message: {
     margin: 32,
     fontSize: 16,
     textAlign: 'center',
+    fontFamily: 'Poppins',
   },
   searchBar: {
     margin: 16,
@@ -301,6 +306,7 @@ const styles = StyleSheet.create({
     borderColor: '#5dbb63',
     borderWidth: 2,
     paddingHorizontal: 16,
+    fontFamily: 'Poppins',
   },
   searchIcon: {
     paddingHorizontal: 8,
@@ -316,14 +322,18 @@ const styles = StyleSheet.create({
     margin: 10,
     fontSize: 16,
   },
-  view: {
+  outerView: {
     height: '100%',
+    backgroundColor: 'white',
+    borderTopColor: 'black',
+    borderTopWidth: 1,
+    borderBottomWidth: 1
   },
   cuisineType: {
     marginRight: 16,
     color: 'white',
-    fontWeight: '600',
     textTransform: 'capitalize',
+    fontFamily: 'Poppins-semibold',
   },
   buttonStyle: {
     width: '100%',
@@ -334,25 +344,29 @@ const styles = StyleSheet.create({
     maxHeight: 30,
     marginBottom: 8,
     backgroundColor: 'white',
+    fontFamily: 'Poppins',
   },
   buttonTextStyle: {
     fontSize: 12,
+    fontFamily: 'Poppins',
   },
   rowStyle: {},
-  rowTextStyle: {},
-  selectedRowTextStyle: {
-    color: 'red',
+  rowTextStyle: {
+    fontSize: 12,
+    fontFamily: 'Poppins',
   },
   filterHeader: {
     fontWeight: '700',
     fontSize: 24,
     textAlign: 'center',
     marginLeft: 32,
+    fontFamily: 'Poppins',
   },
   filterSubheader: {
     marginHorizontal: 16,
     marginBottom: 4,
-    marginTop: 8,
+    marginTop: 16,
+    fontFamily: 'Poppins',
   },
   filterContainer: {
     marginRight: 0,
@@ -370,18 +384,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 0,
     marginLeft: 24,
   },
   filterCloseButton: {
     color: '#000',
     fontWeight: '700',
     fontSize: 24,
+    fontFamily: 'Poppins',
   },
   filterCloseButton2: {
     color: '#fff',
     fontWeight: '700',
     fontSize: 24,
+    fontFamily: 'Poppins',
   },
   filterIcon: {
     tintColor: '#000',

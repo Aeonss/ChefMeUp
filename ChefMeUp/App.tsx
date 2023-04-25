@@ -1,21 +1,12 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {createStackNavigator} from '@react-navigation/stack';
-import {Text, Image} from 'react-native';
+import {Image} from 'react-native';
 import RecipeStack from './views/RecipesStack';
 import GroceriesStack from './views/GroceriesStack';
 import SettingsView from './views/SettingsView';
 
 const Tab = createMaterialBottomTabNavigator();
-
-
-const ThirdStack = () => (
-    <Text>Check</Text>
-);
-const ThirdScreen = () => (
-  <Text style={{textAlign: 'center'}}>Third Screen</Text>
-);
 
 const App = () => {
   return (

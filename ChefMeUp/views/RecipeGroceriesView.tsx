@@ -60,8 +60,6 @@ const RecipeGroceriesView = ({route, navigation}: RecipeGroceriesViewProps) => {
           placeholderTextColor="#8f8c8c"
           style={styles.searchInput}
           returnKeyType="search"
-          keyboardType="number-pad"
-          textContentType="ingredientsssss"
           onSubmitEditing={saveIngredient}></TextInput>
         <TouchableOpacity onPress={saveIngredient} style={styles.searchIcon}>
           <Image
