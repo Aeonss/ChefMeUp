@@ -23,7 +23,6 @@ async function fetchRecipes(query: string, cuisine: string, dietLabels: string[]
   const response = await fetch(`${baseURL}/recipes?q=${encodedQuery}`);
   const json = await response.json();
   if (response.ok) {
-    console.log(json);
     return json as Recipe[];
   } else {
     return Promise.reject('Unable to fetch recipes');
@@ -36,11 +35,9 @@ async function fetchPrice(recipe: Recipe) {
   recipe.ingredients.forEach(ingredient => {
     query += `&item=${encodeURIComponent(ingredient.name)}`;
   });
-  console.log(query);
   const response = await fetch(query);
   const json = await response.json();
   if (response.ok) {
-    console.log(json);
     return json as PurchaseOption[];
   } else {
     return Promise.reject('Unable to fetch price');
@@ -53,11 +50,9 @@ async function fetchPrices(ingredients: Ingredient[]) {
     ingredients.forEach(ingredient => {
       query += `&item=${encodeURIComponent(ingredient.name)}`;
     });
-    console.log(query);
     const response = await fetch(query);
     const json = await response.json();
     if (response.ok) {
-      console.log(json);
       return json as PurchaseOption[];
     } else {
       return Promise.reject('Unable to fetch price');
