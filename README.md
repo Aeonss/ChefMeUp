@@ -31,7 +31,7 @@ Solution: yarn add react-native-screens
 
 
 ## Backend
-Flask Server: https://hmhing.pythonanywhere.com/
+Flask Server: http://143.198.190.172/
 
 ## Endpoints
 
@@ -66,7 +66,7 @@ Required: query
 Required: id, zipcode
 ```
 * Recipe lookup using the ID, and returns the json object recipe along with an estimate cost of the recipe using a nearby store in the zipcode area
-* By default, the number of stores is 2, but you can change the limit with &stores=N
+* By default, the number of stores is 4, but you can change the limit with &stores=N
     * Estimated cost of the recipe will give N json objects with:
         * price
         * id
@@ -77,12 +77,13 @@ Required: id, zipcode
 
 
 ```bash
+/price?item=ITEM&zipcode=ZIPCODE
 /price?item=ITEM&item=ITEM&item=ITEM&zipcode=ZIPCODE&stores=5&lon=LON&lat=LAT
 
 Required: item, zipcode
 ```
 * Looks up the estimate price for a list of items
-* By default, the amount of stores is 2
+* By default, the amount of stores is 4
     * Estimate cost of the list of items will give N json objects with:
         * price
         * id
@@ -105,32 +106,6 @@ Required: zipcode
     * chain
     * logoUrl
     * address
-
-```bash  
-/item?storeid=STOREID&q=QUERY
-
-Required: storeId, query
-```
-* Returns a json list of json objects in the given store (with the storeId)
-    * storeId
-    * price
-    * description
-    * imageUrl
-    * amount
-
-```bash  
-/distance?lon1=LON1&lat1=LAT1&lon2=LON2&lat2=LAT2
-
-Required: lon1, lat1, lon2, lat2
-```
-* Returns the *driving* distance between the 2 coordinates in miles using OSRM API.
-
-```bash  
-/address2coord?address=STREET, CITY, STATE
-
-Required: address
-```
-* Returns a json object with the lat and the lon of the address using OpenStreetMap API.
 
 
 ## Filters for recipes:

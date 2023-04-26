@@ -1,11 +1,10 @@
 from bs4 import BeautifulSoup
 import json, requests
 
-url = "https://api.edamam.com/api/recipes/v2?type=public&q=chicken&app_id=0f91a740&app_key=cfe00546378229eb14793ea770992f82"
-soup = BeautifulSoup(requests.get(url).text, "html.parser")
-
-json_recipes = []
-
-recipes = json.loads(soup.text)['hits']
-
-print(len(recipes))
+proxies = {"http": "http://161.35.70.249:8080",
+           "http": "http://139.99.237.62:80"}
+        
+zipcode=22030
+url = f"https://mobileapi.lidl.com/v1/stores?q={zipcode}"
+r = requests.get(url, proxies=proxies)
+print(r.content)

@@ -3,13 +3,14 @@ from bs4 import BeautifulSoup
 import requests, json, random
 
 from GroceryStores.kroger import KrogerServiceClient
-from GroceryStores.lidl import Lidl
+from GroceryStores.lidl import LidlClient
 
 TOKEN = ["Y2hlZm1ldXAtNTA3OTJmZjdkOTNiYjRjYTk4MzIzMjcwMDRiNzRhN2M3NjMxMjczMjY2NTI4MDgzMTAwOmtqak9EcWdWUzdXT1FheWU4N1ZZY25URXhZWUxtc2ljQ0RkVDhmTl8=", "YXNkYXNkLWE4ZjVmMTY3ZjQ0ZjQ5NjRlNmM5OThkZWU4MjcxMTBjNDgxNTY1NzM4MzI1NTQ5OTUyMjp0ZTRCT1luRjd0aFlHYVZsN1JIVzVyV0hkanNMSkpUVXQyWk93MmFB", "YXNkYXMtMGFhMWVhOWE1YTA0Yjc4ZDQ1ODFkZDZkMTc3NDI2Mjc4MjEyODMzMTAxNzQ5MDI1NjMxOmVSQlVHX0xoU09famwteXlOaE1iNHFSa2VEdHh2VC1EVUhzM1Y5M3M=", "YTA5b2thZm8tNmU5MjI4ZWE4Yzg1Y2VlYWU5MjI3NDA5ZWU0MjFjNDg3NDY5NzIwOTk1NTA0ODA3MDA0OkZkVnBDSHJnWm9PWjZabkQ2eW9VRnhISTJTM1JGSHZ5a21ESGRLcEk=", "YXNkcHZuYS1iYWM4ZTg2ZGQ4ZGJmMTBlZWNiOGRlMGYyMDFhMjU1MjQ5NDYyMDQzOTgwMjczOTY2ODk6ZnIwcE1USE15M0VQcGFqWE1TZVlPeF92UFo5bUxxaWNFeFhNYkZucw=="]
 
 api_id = ["0f91a740", "8d908447", "662fb153", "7126e21a", "6e34143b"]
 app_key = ["cfe00546378229eb14793ea770992f82", "b7c90f7191c23bdcff45f9c5399641d1", "611b4d03fad6c242cb395cc6cff93fed", "35f2d885abeef249acb520df8a78f8d2", "3ce229372925813abd79183c9ae5910d"]
 
+NUM_STORES = 2
 
 app = Flask(__name__)
 
@@ -21,7 +22,7 @@ def home():
 
 # Gets a list of recipes with the given search term
 @app.route("/recipes", methods=['GET'])
-def search_recipe():
+def searchRecipe():
     query = request.args.get('q')
     diet = request.args.getlist('diet')
     health = request.args.getlist('health')
@@ -95,7 +96,7 @@ def search_recipe():
 
 # Gets a recipe via an id and estimates the cost of the recipe
 @app.route("/recipe", methods=['GET'])
-def get_recipe():
+def getRecipe():
     recipe_id = request.args.get('id')
     zipcode = request.args.get('zipcode')
     stores = request.args.get('stores')
@@ -136,64 +137,69 @@ def get_recipe():
         data['ingredients'].append(json_ingredient)
     
     if zipcode != None:
-        # Kroger
-        randnum = random.randint(0, 4)
-        client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
-        
         if stores == None:
             stores = 2
         
-        # Find closest store ids
-        locations = client.get_locations(zipcode, within_miles=10, limit=stores)
-        stores = []
-        for location in locations:
-            store = {}
-            store['id'] = location.get("id")
-            store['name'] = location.get("name")
-            store['address'] = location.get("address")
-            store['logoUrl'] = location.get("logoUrl")
-            
-            if lon and lat != None:
-            
-                try:
-                    parsed_address = location.get("address").replace(" ", "+")
-                    r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
-
-                    data = json.loads(r.content)
-                    store_lat = data[0]["lat"]
-                    store_lon = data[0]["lon"]
-
-                    r2 = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon},{lat};{store_lon},{store_lat}?overview=false")
-                    route = json.loads(r2.content).get("routes")[0]
-                    distance = route.get("legs")[0]['distance'] / 1609
-                    store['distance'] = distance
-                except:
-                    pass
-            
-            
-            stores.append(store)
+        stores_list = getStores(stores, 10, zipcode, lon, lat)
         
-        data['totalCost'] = calculateCost(data['ingredients'], client, stores, True)
+        data['totalCost'] = calculateCost(data['ingredients'], stores_list, True)
         
     else:
-        data['totalCost'] = ""
+        data['totalCost'] = "N/A"
     
     data['instructions'] = recipe["url"]
     
     return jsonify(data)
 
 
+# Gets a list of grocery stores in the given zipcode with an optional param of stores and radius
+@app.route("/grocery", methods=['GET'])
+def searchZip():
+    zipcode = request.args.get('zipcode')
+    stores = request.args.get('stores')
+    radius = request.args.get('radius')
+    
+    if stores == None:
+        stores = 4
+    if radius == None:
+        radius = 10
+    
+    return jsonify(getStores(stores, radius, zipcode, None, None))
+    
+    
+    
+# Gets the price of a list of items
+@app.route("/price", methods=['GET'])
+def getPrice():
+    ingredients = request.args.getlist('item')
+    zipcode = request.args.get('zipcode')
+    stores = request.args.get('stores')
+    lon = request.args.get('lon')
+    lat = request.args.get('lat')
+    
+    if stores == None:
+        stores = 4
+    
+    
+    stores_list = getStores(stores, 10, zipcode, lon, lat)    
+
+    prices = calculateCost(ingredients, stores_list, False)
+
+    return jsonify(prices)
+    
+    
+# ------------- HELPERS ------------- #
+
+
 # Calculates the cost of a recipe of list of items
-def calculateCost(recipe, client, location_ids, isRecipe):
+def calculateCost(recipe, location_ids, isRecipe):
     prices = []
     
     for location_id in location_ids:
-        
         data = {}
         price = 0.0
         
-        for ingredient in recipe:
-            
+        for ingredient in recipe:    
             if isRecipe:
                 name = ingredient.get("name")
                 amount = ingredient.get("amount")
@@ -201,18 +207,15 @@ def calculateCost(recipe, client, location_ids, isRecipe):
             else:
                 name = ingredient
                 
-            # ~ 6 seconds for 1 store and 11 ingredients (11 searches)
-            # ~ 16 seconds for 2 stores and 11 ingredients (22 searches)
-            # ~ 21 seconds for 3 stores and 6 ingredients (18 searches)
-            # ~ 35 seconds for 5 stores and 11 ingredients (55 searches)
-            products = client.search_products(term=name, limit=5, location_id=location_id.get("id"))
+
+            # Searches Kroger or Lidl
+            if "US" in location_id.get("id"):
+                products = LidlClient().search_products(name, location_id.get("id"), 5)
+            else:
+                client = KrogerServiceClient(encoded_client_token=TOKEN[random.randint(0, 4)])
+                products = client.search_products(term=name, limit=5, location_id=location_id.get("id"))
             
-            # Need to compare amount and unit
-            # For now it gets the first grocery price
-            
-            # print(products[0]['description'])
-            # print(products[0]['price'])
-            
+            # Need to compare amount and unit, for now it gets the first grocery price
             # Get first product item price (future: need to find product that fits amount needed)
             price += products[0]['price']
         
@@ -224,67 +227,35 @@ def calculateCost(recipe, client, location_ids, isRecipe):
     return prices
 
 
-# Gets a list of grocery stores in the given zipcode with an optional param of stores and radius
-@app.route("/grocery", methods=['GET'])
-def search_zip():
-    zipcode = request.args.get('zipcode')
-    stores = request.args.get('stores')
-    radius = request.args.get('radius')
-    
-    if stores == None:
-        stores = 5
-    if radius == None:
-        radius = 10
-    
-    all_locations = []
-    
-    # Kroger
-    randnum = random.randint(0, 4)
-    client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
-    locations = client.get_locations(zipcode, within_miles=radius, limit=stores)
-    
-    # Return Kroger locations
-    for location in locations:
-        all_locations.append(location)
-    
-    return jsonify(all_locations)
-    
-    
-# Gets the list of products from a given item name and storeId
-@app.route("/item", methods=['GET'])
-def search_item():
-    storeid = request.args.get('storeid')
-    query = request.args.get('q')
-    
-    randnum = random.randint(0, 4)
-    client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
+# Gets distance to address from lat/lon
+def getDistance(lon, lat, address):
+    try:
+        parsed_address = address.replace(" ", "+")
+        r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
 
-    products = client.search_products(term=query, limit=5, location_id=storeid)
-    
-    json_items = []
-    for product in products:
-        json_items.append(product)
+        data = json.loads(r.content)
+        store_lat = data[0]["lat"]
+        store_lon = data[0]["lon"]
+
+        r2 = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon},{lat};{store_lon},{store_lat}?overview=false")
+        route = json.loads(r2.content).get("routes")[0]
         
-    return jsonify(json_items)
+        return route.get("legs")[0]['distance'] / 1609
+        
+    except:
+        return "N/A"
 
 
-# Gets the price of a list of items
-@app.route("/price", methods=['GET'])
-def get_price():
-    ingredients = request.args.getlist('item')
-    zipcode = request.args.get('zipcode')
-    stores = request.args.get('stores')
-    lon = request.args.get('lon')
-    lat = request.args.get('lat')
+# Gets a JSON list of stores with id, name, address, logoUrl, and 
+def getStores(n, radius, zipcode, lon, lat):
     
-    # Kroger
-    randnum = random.randint(0, 4)
-    client = KrogerServiceClient(encoded_client_token=TOKEN[randnum])
-        
-    if stores == None:
-        stores = 2
-        
-    locations = client.get_locations(zipcode, within_miles=10, limit=stores)
+    # Kroger Client
+    client = KrogerServiceClient(encoded_client_token=TOKEN[random.randint(0, 4)])
+
+    # Add Kroger and Lidl locations
+    locations = client.get_locations(zipcode, within_miles=radius, limit=int((int(n)/NUM_STORES)))
+    locations += LidlClient().get_locations(zipcode, int((int(n)/NUM_STORES)))
+    
     stores = []
     for location in locations:
         store = {}
@@ -292,77 +263,15 @@ def get_price():
         store['name'] = location.get("name")
         store['address'] = location.get("address")
         store['logoUrl'] = location.get("logoUrl")
-        store['distance'] = ""
+        store['distance'] = "N/A"
         
+        # Calculate distance with lon and lat
         if lon and lat != None:
-            
-            try:
-                parsed_address = location.get("address").replace(" ", "+")
-                r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
-
-                data = json.loads(r.content)
-                store_lat = data[0]["lat"]
-                store_lon = data[0]["lon"]
-
-                r2 = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon},{lat};{store_lon},{store_lat}?overview=false")
-                route = json.loads(r2.content).get("routes")[0]
-                distance = route.get("legs")[0]['distance'] / 1609
-                store['distance'] = distance
-            except:
-                pass
+            store['distance'] = getDistance(lon, lat, location.get("address"))
         
         stores.append(store)
-
-    prices = calculateCost(ingredients, client, stores, False)
-    
-
-        
-
-    return jsonify(prices)
-    
-    
-
-# Gets the distance in miles between 2 coordinates
-@app.route("/distance", methods=['GET'])
-def calc_distance():
-    try:
-        lon1 = request.args.get('lon1')
-        lat1 = request.args.get('lat1')
-        
-        lon2 = request.args.get('lon2')
-        lat2 = request.args.get('lat2')
-        
-        r = requests.get(f"http://router.project-osrm.org/route/v1/car/{lon1},{lat1};{lon2},{lat2}?overview=false")
-
-        route = json.loads(r.content).get("routes")[0]
-
-        # Convert feet to miles
-        distance = route.get("legs")[0]['distance'] / 1609
-        
-        return str(round(distance, 2))
-    except:
-        return ""
-
-
-# Gets the latitude and longitude coordinates of an address
-@app.route("/address2coord", methods=['GET'])
-def addressToCoord():
-    try:
-        address = request.args.get('address')
-        
-        parsed_address = address.replace(" ", "+")
-
-        r = requests.get(f"http://nominatim.openstreetmap.org/search?q={parsed_address}&format=json&polygon=1&addressdetails=1")
-        data = json.loads(r.content)
-        
-        json_data = {}
-        json_data['lat'] = data[0]["lat"]
-        json_data['lon'] = data[0]["lon"]
-        
-        return jsonify(json_data)
-    except:
-        return ""
+    return stores
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0")
