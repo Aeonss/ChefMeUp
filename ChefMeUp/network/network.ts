@@ -44,11 +44,11 @@ async function fetchPrice(recipe: Recipe) {
   }
 }
 
-async function fetchPrices(ingredients: Ingredient[]) {
+async function fetchPrices(ingredients: string[]) {
     const zipcode = await AsyncStorage.getItem('@ZIPCODE');
     let query = `${baseURL}/price?zipcode=${zipcode}&stores=4`;
     ingredients.forEach(ingredient => {
-      query += `&item=${encodeURIComponent(ingredient.name)}`;
+      query += `&item=${encodeURIComponent(ingredient)}`;
     });
     const response = await fetch(query);
     const json = await response.json();

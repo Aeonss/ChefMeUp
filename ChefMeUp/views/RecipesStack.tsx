@@ -32,7 +32,7 @@ const RecipePricesViewWrapper = () => {
     <Stack.Screen
       name="RecipePricesView"
       component={RecipePricesView}
-      options={{title: 'Recipe Grocery Prices'}}
+      options={{title: 'Grocery Prices'}}
     />
   );
 };

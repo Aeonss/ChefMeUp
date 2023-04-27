@@ -11,18 +11,31 @@ import {RecipePricesViewProps} from './RecipeStackParams';
 import {ActivityIndicator} from 'react-native-paper';
 import Network from '../network/network';
 import {PurchaseOption} from '../model/PurchaseOption';
+import { GroceryPricesViewProps } from './GroceriesStackParams';
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
 });
 
+const fullName = (name: string) => {
+  if (name.includes('HART')) {
+    return 'Harris Teeter';
+  } else if (name.includes('Lidl')) {
+    return 'Lidl';
+  } else if (name.includes('KROGER')) {
+    return 'Kroger';
+  } else {
+    return name;
+  }
+};
+
 const PurchaseOptionCell = (option: PurchaseOption) => {
   return (
     <View style={styles.purchaseOptionCell} key={option.store.id}>
       <Image style={styles.storeImage} source={{uri: option.store.logoUrl}} />
       <View>
-        <Text style={styles.storeName}>{option.store.name}</Text>
+        <Text style={styles.storeName}>{fullName(option.store.name)}</Text>
         <Text style={styles.storeAddress}>{option.store.address}</Text>
       </View>
       <View style={styles.spacer}></View>
@@ -31,8 +44,17 @@ const PurchaseOptionCell = (option: PurchaseOption) => {
   );
 };
 
-const RecipePricesView = ({route, navigation}: RecipePricesViewProps) => {
-  const {recipe, selectedIngredients} = route.params;
+const RecipePricesView = ({route, navigation}: RecipePricesViewProps|GroceryPricesViewProps) => {
+    navigation.setOptions({
+        headerTitleStyle: {
+          fontFamily: 'Poppins',
+          fontWeight: '400',
+          color: 'black'
+        },
+        headerBackTitle: ' ',
+        headerTintColor: '#5dbb63',
+      });
+  const {selectedIngredients} = route.params;
   const [isLoading, setIsLoading] = useState(true);
   const [prices, setPrices] = useState<PurchaseOption[]>([]);
   const [performedFetch, setPerformedFetch] = useState(false);
@@ -52,9 +74,15 @@ const RecipePricesView = ({route, navigation}: RecipePricesViewProps) => {
   });
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{recipe.name}</Text>
       <ScrollView style={styles.scrollView}>
-        <Image source={{uri: recipe.imageUrl}} style={styles.image} />
+        {/* {recipe != undefined && <Text style={styles.title}>{recipe.name}</Text>}
+        {recipe != undefined && (
+          <Image source={{uri: recipe.imageUrl}} style={styles.image} />
+        )} */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.info}>Checking prices for:</Text>
+        </View>
+        <Text style={styles.ingredient}>{selectedIngredients.map(a => "• " + a).join("\n")}</Text>
         <View style={styles.infoContainer}>
           <Text style={styles.info}>Grocery Stores Near You</Text>
         </View>
@@ -87,7 +115,7 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 16,
     fontWeight: '600',
-    textAlign: 'center',
+    textAlign: 'left',
     marginTop: 10,
     fontFamily: 'Poppins-semibold',
   },
@@ -129,10 +157,15 @@ const styles = StyleSheet.create({
   storeAddress: {
     fontSize: 10,
     fontFamily: 'Poppins',
+    maxWidth: '80%',
   },
   storePrice: {
     fontFamily: 'Poppins-medium',
   },
+  ingredient: {
+    fontFamily: 'Poppins',
+    textTransform: 'capitalize'
+  }
 });
 
 export default RecipePricesView;

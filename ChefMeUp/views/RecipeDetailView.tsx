@@ -29,15 +29,15 @@ const labelView = (labels: string[]) => {
 };
 
 const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
-//   const [takenScreenshot, setTakenScreenshot] = useState(false);
+  //   const [takenScreenshot, setTakenScreenshot] = useState(false);
   const ref = useRef<RNViewShot>(null);
-//   useEffect(() => {
-//     if (takenScreenshot) return;
-//     setTakenScreenshot(true);
-//     setTimeout(() => {
-//       if (ref.current?.capture) ref.current?.capture();
-//     }, 5000);
-//   });
+  //   useEffect(() => {
+  //     if (takenScreenshot) return;
+  //     setTakenScreenshot(true);
+  //     setTimeout(() => {
+  //       if (ref.current?.capture) ref.current?.capture();
+  //     }, 5000);
+  //   });
   const onCapture = useCallback((uri: string) => {
     console.log('do something with ', uri);
   }, []);
@@ -146,8 +146,7 @@ const RecipeDetailView = ({route, navigation}: RecipesDetailViewProps) => {
                 (ing, idx) => checkedIngredients[idx],
               );
               navigation.navigate('RecipePricesView', {
-                recipe: recipe,
-                selectedIngredients: selectedIngredients,
+                selectedIngredients: selectedIngredients.map(i => i.name),
               });
             }}
             disabled={checkedIngredients.filter(a => a).length == 0}
