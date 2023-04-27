@@ -3,7 +3,7 @@ import { PurchaseOption } from '../model/PurchaseOption';
 import {Recipe} from '../model/Recipe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const baseURL = 'https://hmhing.pythonanywhere.com';
+const baseURL = 'http://143.198.190.172';
 
 async function fetchRecipes(query: string, cuisine: string, dietLabels: string[], healthLabels: string[]) {
   let encodedQuery = encodeURIComponent(query);
@@ -31,7 +31,7 @@ async function fetchRecipes(query: string, cuisine: string, dietLabels: string[]
 
 async function fetchPrice(recipe: Recipe) {
   const zipcode = await AsyncStorage.getItem('@ZIPCODE');
-  let query = `${baseURL}/price?zipcode=${zipcode}&stores=3`;
+  let query = `${baseURL}/price?zipcode=${zipcode}&stores=4`;
   recipe.ingredients.forEach(ingredient => {
     query += `&item=${encodeURIComponent(ingredient.name)}`;
   });
@@ -46,7 +46,7 @@ async function fetchPrice(recipe: Recipe) {
 
 async function fetchPrices(ingredients: Ingredient[]) {
     const zipcode = await AsyncStorage.getItem('@ZIPCODE');
-    let query = `${baseURL}/price?zipcode=${zipcode}&stores=3`;
+    let query = `${baseURL}/price?zipcode=${zipcode}&stores=4`;
     ingredients.forEach(ingredient => {
       query += `&item=${encodeURIComponent(ingredient.name)}`;
     });

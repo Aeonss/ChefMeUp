@@ -262,6 +262,7 @@ Required: zipcode
 ## APIs
 * [Edamam](https://developer.edamam.com/edamam-recipe-api)
 * [Kroger](https://developer.kroger.com/reference/)
+* [Lidl](https://mobileapi.lidl.com/v1/)
 * [OSRM (Open Source Routing Machine)](http://project-osrm.org/docs/v5.5.1/api/#general-options)
 * [OpenStreetMap](https://wiki.openstreetmap.org/wiki/API)
 
