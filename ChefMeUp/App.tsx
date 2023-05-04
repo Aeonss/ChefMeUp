@@ -25,18 +25,6 @@ const App = () => {
           },
           tabBarInactiveBackgroundColor: 'white',
         }}
-        // shifting={false}
-        // sceneAnimationEnabled={false}
-        // activeColor="black"
-        // inactiveColor="#888"
-
-        // barStyle={{
-        //   backgroundColor: 'white',
-        // }}
-        // theme={{colors:{secondaryContainer: 'transparent'}}}
-        // screenOptions={{
-        //   tabBarColor: 'black',
-        // }}
       >
         <Tab.Screen
           name="First"
